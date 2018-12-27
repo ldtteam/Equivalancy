@@ -1,9 +1,12 @@
 package com.ldtteam.equivalency.api.compound.container.dummy;
 
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 /**
  * Represents a unknown type.
@@ -36,9 +39,21 @@ public class Dummy implements ICompoundContainerWrapper<Dummy>
      * @return The amount.
      */
     @Override
-    public Integer getContentsCount()
+    public Double getContentsCount()
     {
-        return 0;
+        return 0d;
+    }
+
+    /**
+     * Returns a set of wrappers that this wrapper is equivalent to.
+     * Allows for equivalency between object types (different ItemStacks (oredic), but also ItemStack -> BlockState mappings)
+     *
+     * @return The equivalent mappings.
+     */
+    @Override
+    public Set<ICompoundContainerWrapper<?>> isEquivalentTo()
+    {
+        return Sets.newHashSet();
     }
 
     /**

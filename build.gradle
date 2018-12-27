@@ -20,6 +20,12 @@ repositories {
         name 'LDTTeam - Modding'
         url 'https://ldtteam.jfrog.io/ldtteam/modding/'
     }
+    repositories {
+        maven {
+            name = "CurseForge"
+            url = "https://minecraft.curseforge.com/api/maven/"
+        }
+    }
 }
 
 apply plugin: 'idea'
@@ -69,6 +75,10 @@ minecraft {
 }
 
 dependencies {
+    //Thaumcraft
+    deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA26"
+    deobfCompile "baubles:Baubles:1.12:1.5.2"
+    
     // compile against the JEI API but do not include it at runtime
     deobfProvided "mezz.jei:jei_${project.exactMinecraftVersion}:${project.jeiVersion}:api"
     // at runtime, use the full JEI jar
@@ -87,7 +97,8 @@ dependencies {
 
     //Utilities
     compile 'com.intellij:annotations:+@jar'
-    compile 'org.apache.commons:commons-math3:3.6.1'
+    compile 'org.jgrapht:jgrapht-core:+'
+    compile 'org.jgrapht:jgrapht-ext:+'
 }
 
 processResources {

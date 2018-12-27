@@ -127,4 +127,13 @@ public class SimpleCompoundInstance implements ICompoundInstance
         result = 31 * result + getAmount().hashCode();
         return result;
     }
+
+    @Override
+    public String toString()
+    {
+        return "SimpleCompoundInstance{" +
+                 "type=" + type +
+                 ", amount=" + amount +
+                 '}';
+    }
 }

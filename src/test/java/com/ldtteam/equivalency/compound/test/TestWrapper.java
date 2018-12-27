@@ -1,38 +1,60 @@
-package com.ldtteam.equivalency.compound.container.itemstack;
+package com.ldtteam.equivalency.compound.test;
 
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.EquivalencyApi;
-import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
-import com.ldtteam.equivalency.api.util.Comparators;
-import com.ldtteam.equivalency.api.util.Constants;
-import com.ldtteam.equivalency.api.util.EquivalencyLogger;
-import com.ldtteam.equivalency.api.util.ItemStackUtils;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.common.util.JsonUtils;
-import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.Validate;
+import org.assertj.core.util.Sets;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
+public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
 {
 
-    public static final class Factory implements ICompoundContainerWrapperFactory<ItemStack>
+    public static final class Test {
+        private final String name;
+
+        public Test(final String name) {this.name = name;}
+
+        public String getName()
+        {
+            return name;
+        }
+
+        @Override
+        public boolean equals(final Object o)
+        {
+            if (this == o)
+            {
+                return true;
+            }
+            if (!(o instanceof Test))
+            {
+                return false;
+            }
+
+            final Test test = (Test) o;
+
+            return getName() != null ? getName().equals(test.getName()) : test.getName() == null;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return getName() != null ? getName().hashCode() : 0;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Test{" +
+                     "name='" + name + '\'' +
+                     '}';
+        }
+    }
+
+    public static final class Factory implements ICompoundContainerWrapperFactory<Test>
     {
 
         /**
@@ -43,9 +65,9 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          */
         @NotNull
         @Override
-        public Class<ItemStack> getContainedTypeClass()
+        public Class<Test> getContainedTypeClass()
         {
-            return ItemStack.class;
+            return Test.class;
         }
 
         /**
@@ -62,11 +84,9 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          */
         @NotNull
         @Override
-        public ICompoundContainerWrapper<ItemStack> wrap(@NotNull final ItemStack tInstance, @NotNull final double count)
+        public ICompoundContainerWrapper<Test> wrap(@NotNull final Test tInstance, @NotNull final double count)
         {
-            final ItemStack stack = tInstance.copy();
-            stack.setCount(1);
-            return new ItemStackWrapper(stack, count);
+            return new TestWrapper(tInstance, count);
         }
 
         /**
@@ -85,18 +105,10 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          * @throws JsonParseException if json is not in the expected format of {@code typeofT}
          */
         @Override
-        public ICompoundContainerWrapper<ItemStack> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+        public ICompoundContainerWrapper<Test> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
-            try
-            {
-                return new ItemStackWrapper(new ItemStack(JsonToNBT.getTagFromJson(json.getAsJsonObject().get("stack").getAsString())), json.getAsJsonObject().get("count").getAsDouble());
-            }
-            catch (NBTException e)
-            {
-                EquivalencyLogger.getLogger().error(e);
-            }
-
-            return null;
+            final JsonObject object = (JsonObject) json;
+            return new TestWrapper(new Test(object.get("name").getAsString()), object.get("count").getAsDouble());
         }
 
         /**
@@ -114,39 +126,42 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          * @return a JsonElement corresponding to the specified object.
          */
         @Override
-        public JsonElement serialize(final ICompoundContainerWrapper<ItemStack> src, final Type typeOfSrc, final JsonSerializationContext context)
+        public JsonElement serialize(final ICompoundContainerWrapper<Test> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
             final JsonObject object = new JsonObject();
+            object.addProperty("name", src.getContents().name);
             object.addProperty("count", src.getContentsCount());
-            object.addProperty("stack", src.getContents().writeToNBT(new NBTTagCompound()).toString());
             return object;
         }
     }
 
-    private final ItemStack stack;
-    private final double count;
+    private final Test contents;
+    private final Double count;
 
-    public ItemStackWrapper(final ItemStack stack, final double count) {
-        this.stack = stack.copy();
-        this.stack.setCount(1);
+    public TestWrapper(@NotNull final String name, final double count)
+    {
+        this(new Test(name), count);
+    }
 
+    public TestWrapper(final Test contents, final Double count) {
+        this.contents = contents;
         this.count = count;
     }
 
     /**
      * The contents of this container.
-     * Set to the 1 unit of the content type {@link ItemStack}
+     * Set to the 1 unit of the content type {@link Test}
      *
      * @return The contents.
      */
     @Override
-    public ItemStack getContents()
+    public Test getContents()
     {
-        return stack;
+        return contents;
     }
 
     /**
-     * The amount of {@link ItemStack}s contained in this wrapper.
+     * The amount of {@link Test}s contained in this wrapper.
      *
      * @return The amount.
      */
@@ -165,15 +180,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
     @Override
     public Set<ICompoundContainerWrapper<?>> isEquivalentTo()
     {
-        //TODO Add BlockState equivalency somehow.
-        final int[] oreIds = OreDictionary.getOreIDs(stack);
-
-        return Arrays.stream(oreIds)
-          .mapToObj(OreDictionary::getOreName)
-          .flatMap(name -> OreDictionary.getOres(name).stream())
-          .distinct()
-          .map(stack -> EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(stack, (double) stack.getCount()))
-          .collect(Collectors.toSet());
+        return Sets.newHashSet();
     }
 
     /**
@@ -218,21 +225,11 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
     @Override
     public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
     {
-        //Dummies are after us. :D
-        if (o instanceof Dummy)
+        if (!(o instanceof TestWrapper))
             return -1;
 
-        final Object contents = Validate.notNull(o.getContents());
-        if (!(contents instanceof ItemStack))
-        {
-            return ItemStack.class.getName().compareTo(contents.getClass().getName());
-        }
-
-        final ItemStack otherStack = (ItemStack) contents;
-        if (OreDictionary.itemMatches(stack, otherStack, false))
-            return 0;
-
-        return Comparators.ID_COMPARATOR.compare(stack, otherStack);
+        final TestWrapper t = (TestWrapper) o;
+        return getContents().name.compareTo(t.getContents().name);
     }
 
     @Override
@@ -242,31 +239,33 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         {
             return true;
         }
-        if (!(o instanceof ItemStackWrapper))
+        if (!(o instanceof TestWrapper))
         {
             return false;
         }
 
-        final ItemStackWrapper that = (ItemStackWrapper) o;
+        final TestWrapper that = (TestWrapper) o;
 
-        if (Double.compare(that.count, count) != 0)
+        if (getContents() != null ? !getContents().equals(that.getContents()) : that.getContents() != null)
         {
             return false;
         }
-        return EquivalencyApi.getInstance().getItemStackEquivalentHelperRegistry().areItemStacksEquivalentExceptForStack(this.stack, that.stack);
+        return count != null ? count.equals(that.count) : that.count == null;
     }
 
     @Override
     public int hashCode()
     {
-        return stack.getItem().hashCode();
+        int result = getContents() != null ? getContents().hashCode() : 0;
+        result = 31 * result + (count != null ? count.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString()
     {
-        return "ItemStackWrapper{" +
-                 "stack=" + stack +
+        return "TestWrapper{" +
+                 "contents=" + contents +
                  ", count=" + count +
                  '}';
     }

@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * EG: 2 Wooden planks for 4 Sticks as output, as well a 1 coal for 16 heat.
  */
-public interface IEquivalencyRecipe extends Comparable<IEquivalencyRecipe>
+public interface IEquivalencyRecipe
 {
 
     /**

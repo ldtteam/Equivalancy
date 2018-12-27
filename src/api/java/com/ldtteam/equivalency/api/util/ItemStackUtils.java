@@ -301,7 +301,7 @@ public class ItemStackUtils
         if (!isEmpty(itemStack1) &&
               !isEmpty(itemStack2) &&
               itemStack1.getItem() == itemStack2.getItem() &&
-              (itemStack1.getItemDamage() == itemStack2.getItemDamage() || !matchMeta))
+              (itemStack1.getItemDamage() == itemStack2.getItemDamage() || !matchMeta || itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE))
         {
             // Then sort on NBT
             if (itemStack1.hasTagCompound() && itemStack2.hasTagCompound())

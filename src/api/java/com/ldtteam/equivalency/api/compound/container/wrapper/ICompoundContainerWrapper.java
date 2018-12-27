@@ -32,6 +32,4 @@ public interface ICompoundContainerWrapper<T> extends Comparable<ICompoundContai
      * @return The equivalent mappings.
      */
     Set<ICompoundContainerWrapper<?>> isEquivalentTo();
-
-
 }

@@ -1,15 +1,8 @@
 package com.ldtteam.equivalency.api.util;
 
-import net.minecraftforge.fml.common.TracingPrintStream;
-import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import net.minecraftforge.fml.relauncher.FMLRelaunchLog;
-import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
-
-import java.util.Locale;
 
 public class EquivalencyLogger
 {
@@ -46,7 +39,7 @@ public class EquivalencyLogger
 
     public static void log(Level level, String format, Object... data)
     {
-        EquivalencyLogger.log(level, format, data);
+        log.log(level, format, data);
     }
 
     public static void log(String targetLog, Level level, Throwable ex, String format, Object... data)
