@@ -1,7 +1,9 @@
 package com.ldtteam.equivalency.compound;
 
+import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +12,11 @@ public class SimpleCompoundInstance implements ICompoundInstance
 {
     private final ICompoundType type;
     private final Double amount;
+
+    public SimpleCompoundInstance(final ICompoundType type, final Integer amount) {
+        this.type = type;
+        this.amount = Double.valueOf(amount);
+    }
 
     public SimpleCompoundInstance(final ICompoundType type, final Double amount) {
         this.type = type;

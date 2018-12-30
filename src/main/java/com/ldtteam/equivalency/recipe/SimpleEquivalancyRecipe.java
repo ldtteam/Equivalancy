@@ -42,6 +42,15 @@ public class SimpleEquivalancyRecipe implements IEquivalencyRecipe
         return outputs;
     }
 
+    /**
+     * Returns the offset factor between inputs and outputs.
+     */
+    @Override
+    public Double getOffsetFactor()
+    {
+        return 1D;
+    }
+
     @Override
     public boolean equals(final Object o)
     {

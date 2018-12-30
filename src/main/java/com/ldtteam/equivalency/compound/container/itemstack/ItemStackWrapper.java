@@ -126,11 +126,29 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
     private final ItemStack stack;
     private final double count;
 
+    private final int hashCode;
+
     public ItemStackWrapper(final ItemStack stack, final double count) {
         this.stack = stack.copy();
         this.stack.setCount(1);
 
         this.count = count;
+
+        if (stack.isEmpty())
+        {
+            this.hashCode = 0;
+            return;
+        }
+
+        final int[] oreIds = OreDictionary.getOreIDs(stack);
+        if (oreIds.length > 0)
+        {
+            this.hashCode = OreDictionary.getOres(OreDictionary.getOreName(oreIds[0])).get(0).writeToNBT(new NBTTagCompound()).hashCode();
+        }
+        else
+        {
+            this.hashCode = stack.writeToNBT(new NBTTagCompound()).hashCode();
+        }
     }
 
     /**
@@ -259,7 +277,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
     @Override
     public int hashCode()
     {
-        return stack.getItem().hashCode();
+        return hashCode;
     }
 
     @Override

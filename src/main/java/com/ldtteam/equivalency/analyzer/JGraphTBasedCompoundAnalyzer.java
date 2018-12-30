@@ -1,12 +1,12 @@
 package com.ldtteam.equivalency.analyzer;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.analyzer.jgrapht.ContainerWrapperGraphNode;
 import com.ldtteam.equivalency.analyzer.jgrapht.IAnalysisGraphNode;
 import com.ldtteam.equivalency.analyzer.jgrapht.RecipeGraphNode;
 import com.ldtteam.equivalency.analyzer.jgrapht.SourceGraphNode;
-import com.ldtteam.equivalency.analyzer.jgrapht.visual.RecipeGraphVisualizationApplet;
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
@@ -107,8 +107,6 @@ public class JGraphTBasedCompoundAnalyzer
             v -> resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances())
           );
 
-        new RecipeGraphVisualizationApplet(recipeGraph).run();
-
         return resultingCompounds;
     }
 
@@ -134,11 +132,29 @@ public class JGraphTBasedCompoundAnalyzer
 
     private void processRecipeGraphUsingBreathFirstSearch(@NotNull final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph)
     {
-        processRecipeGraphFromNodeUsingBreathFirstSearch(recipeGraph, new SourceGraphNode());
+        final LinkedHashSet<IAnalysisGraphNode> processingQueue = new LinkedHashSet<>();
+        processingQueue.add(new SourceGraphNode());
+
+        processRecipeGraphFromNodeUsingBreathFirstSearch(recipeGraph, processingQueue);
     }
 
-    private void processRecipeGraphFromNodeUsingBreathFirstSearch(@NotNull final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph, final IAnalysisGraphNode node)
+    private void processRecipeGraphFromNodeUsingBreathFirstSearch(@NotNull final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph, final LinkedHashSet<IAnalysisGraphNode> processingQueue)
     {
+        final Set<IAnalysisGraphNode> visitedNodes = new LinkedHashSet<>();
+
+        while(!processingQueue.isEmpty())
+        {
+            final Iterator<IAnalysisGraphNode> nodeIterator = processingQueue.iterator();
+            final IAnalysisGraphNode node = nodeIterator.next();
+            nodeIterator.remove();
+
+            processRecipeGraphForNodeWithBFS(recipeGraph, processingQueue, visitedNodes, node);
+        }
+    }
+
+    private void processRecipeGraphForNodeWithBFS(@NotNull final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph, final LinkedHashSet<IAnalysisGraphNode> processingQueue, final Set<IAnalysisGraphNode> visitedNodes, final IAnalysisGraphNode node)
+    {
+        visitedNodes.add(node);
         final Class<? extends IAnalysisGraphNode> clazz = node.getClass();
 
         Set<IAnalysisGraphNode> nextIterationNodes = Sets.newHashSet();
@@ -148,12 +164,12 @@ public class JGraphTBasedCompoundAnalyzer
         if(clazz == SourceGraphNode.class)
         {
             final Set<ContainerWrapperGraphNode> neighbors = recipeGraph
-              .outgoingEdgesOf(node)
-              .stream()
-              .map(recipeGraph::getEdgeTarget)
-              .filter(v -> v instanceof ContainerWrapperGraphNode)
-              .map(v -> (ContainerWrapperGraphNode) v)
-              .collect(Collectors.toSet());
+                                                               .outgoingEdgesOf(node)
+                                                               .stream()
+                                                               .map(recipeGraph::getEdgeTarget)
+                                                               .filter(v -> v instanceof ContainerWrapperGraphNode)
+                                                               .map(v -> (ContainerWrapperGraphNode) v)
+                                                               .collect(Collectors.toSet());
 
             neighbors.forEach(rootNode -> {
                 //This root node should have embedded information.
@@ -167,49 +183,49 @@ public class JGraphTBasedCompoundAnalyzer
         if (clazz == ContainerWrapperGraphNode.class)
         {
             final Set<RecipeGraphNode> neighbors = recipeGraph
-               .outgoingEdgesOf(node)
-               .stream()
-               .map(recipeGraph::getEdgeTarget)
-               .filter(v -> v instanceof RecipeGraphNode)
-               .map(v -> (RecipeGraphNode) v)
-               .collect(Collectors.toSet());
+                                                     .outgoingEdgesOf(node)
+                                                     .stream()
+                                                     .map(recipeGraph::getEdgeTarget)
+                                                     .filter(v -> v instanceof RecipeGraphNode)
+                                                     .map(v -> (RecipeGraphNode) v)
+                                                     .collect(Collectors.toSet());
 
             neighbors.forEach(neighbor -> neighbor.getAnalyzedInputNodes().add(node));
 
             nextIterationNodes = neighbors
-              .stream()
-              .filter(recipeGraphNode -> recipeGraphNode.getAnalyzedInputNodes().size() == recipeGraph.incomingEdgesOf(recipeGraphNode).size())
-              .collect(Collectors.toSet());
+                                   .stream()
+                                   .filter(recipeGraphNode -> recipeGraphNode.getAnalyzedInputNodes().size() == recipeGraphNode.getRecipe().getInputs().size())
+                                   .collect(Collectors.toSet());
         }
         if (clazz == RecipeGraphNode.class)
         {
             final Set<ContainerWrapperGraphNode> resultNeighbors = recipeGraph
-                     .outgoingEdgesOf(node)
-                     .stream()
-                     .map(recipeGraph::getEdgeTarget)
-                     .filter(v -> v instanceof ContainerWrapperGraphNode)
-                     .map(v -> (ContainerWrapperGraphNode) v)
-                     .collect(Collectors.toSet());
+                                                                     .outgoingEdgesOf(node)
+                                                                     .stream()
+                                                                     .map(recipeGraph::getEdgeTarget)
+                                                                     .filter(v -> v instanceof ContainerWrapperGraphNode)
+                                                                     .map(v -> (ContainerWrapperGraphNode) v)
+                                                                     .collect(Collectors.toSet());
 
             final Set<ContainerWrapperGraphNode> inputNeightbors = recipeGraph
-                     .incomingEdgesOf(node)
-                     .stream()
-                     .map(recipeGraph::getEdgeSource)
-                     .filter(v -> v instanceof ContainerWrapperGraphNode)
-                     .map(v -> (ContainerWrapperGraphNode) v)
-                     .collect(Collectors.toSet());
+                                                                     .incomingEdgesOf(node)
+                                                                     .stream()
+                                                                     .map(recipeGraph::getEdgeSource)
+                                                                     .filter(v -> v instanceof ContainerWrapperGraphNode)
+                                                                     .map(v -> (ContainerWrapperGraphNode) v)
+                                                                     .collect(Collectors.toSet());
 
             final Set<ICompoundInstance> summedCompoundInstances = inputNeightbors
-              .stream()
-              .flatMap(inputNeighbor-> inputNeighbor
-                                         .getCompoundInstances()
-                                         .stream()
-                                         .map(compoundInstance -> new HashMap.SimpleEntry<>(compoundInstance.getType(), compoundInstance.getAmount() * recipeGraph.getEdgeWeight(recipeGraph.getEdge(inputNeighbor, node)))))
-              .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (val1, val2)-> val1 + val2))
-              .entrySet()
-              .stream()
-              .map(entry -> new SimpleCompoundInstance(entry.getKey(), entry.getValue()))
-              .collect(Collectors.toSet());
+                                                                     .stream()
+                                                                     .flatMap(inputNeighbor-> inputNeighbor
+                                                                                                .getCompoundInstances()
+                                                                                                .stream()
+                                                                                                .map(compoundInstance -> new HashMap.SimpleEntry<>(compoundInstance.getType(), compoundInstance.getAmount() * recipeGraph.getEdgeWeight(recipeGraph.getEdge(inputNeighbor, node)))))
+                                                                     .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue, (val1, val2)-> val1 + val2))
+                                                                     .entrySet()
+                                                                     .stream()
+                                                                     .map(entry -> new SimpleCompoundInstance(entry.getKey(), entry.getValue()))
+                                                                     .collect(Collectors.toSet());
 
             final Set<IAnalysisGraphNode> nextNodes = new HashSet<>();
 
@@ -247,10 +263,8 @@ public class JGraphTBasedCompoundAnalyzer
             nextIterationNodes = nextNodes;
         }
 
-        nextIterationNodes
-          .forEach(
-            n -> processRecipeGraphFromNodeUsingBreathFirstSearch(recipeGraph, n)
-          );
+        nextIterationNodes.removeIf(visitedNodes::contains);
+        processingQueue.addAll(nextIterationNodes);
     }
 
     private ICompoundContainerWrapper<?> createUnitWrapper(@NotNull final ICompoundContainerWrapper<?> wrapper)

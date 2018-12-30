@@ -28,4 +28,11 @@ public interface IEquivalencyRecipe
      * @return The output.
      */
     Set<ICompoundContainerWrapper<?>> getOutputs();
+
+    /**
+     * Returns the offset factor between inputs and outputs.
+     *
+     * @return
+     */
+    Double getOffsetFactor();
 }
