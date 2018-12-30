@@ -1,6 +1,5 @@
 package com.ldtteam.equivalency.bootstrap;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
@@ -64,7 +63,7 @@ public class CommonBootstrapper
 
     private static void BootstrapCompoundTypes()
     {
-        ModCompoundTypes.WOOD = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_WOOD)).setRegistryName("equivalency:wood"));
+        ModCompoundTypes.TREE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_TREE)).setRegistryName("equivalency:tree"));
         ModCompoundTypes.BURNABLE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName("equivalency:burnable"));
         ModCompoundTypes.STONE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_STONE)).setRegistryName("equivalency:stone"));
         ModCompoundTypes.AIR = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_AIR)).setRegistryName("equivalency:air"));
@@ -137,7 +136,7 @@ public class CommonBootstrapper
         EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
           new ItemStack(Blocks.LOG),
           Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.WOOD, 8),
+            new SimpleCompoundInstance(ModCompoundTypes.TREE, 8),
             new SimpleCompoundInstance(ModCompoundTypes.BURNABLE, 300)
           )
         );
