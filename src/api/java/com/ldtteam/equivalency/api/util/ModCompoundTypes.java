@@ -14,24 +14,32 @@ public final class ModCompoundTypes
     public static ICompoundType STONE;
     public static ICompoundType EARTH;
     public static ICompoundType FIRE;
-    public static ICompoundType DARK;
-    public static ICompoundType LIGHT;
+    public static ICompoundType CHAOS;
+    public static ICompoundType ORDER;
 
-
-    public static ICompoundType TIME; //LIGHT + DARK
-    public static ICompoundType LIFE; //WATER + EARTH + AIR
-    public static ICompoundType BURNABLE; //FIRE + AIR
+    public static ICompoundType TIME; //CHAOS + ORDER
+    public static ICompoundType LIFE; //WATER + EARTH + AIR + CHAOS
+    public static ICompoundType ENERGY; //ORDER + FIRE
 
     public static ICompoundType SEED; //EARTH + LIFE
+    public static ICompoundType BURNABLE; //FIRE + ENERGY
+    public static ICompoundType MOVEMENT; //TIME + LIFE + ENERGY
+    public static ICompoundType ELENTAL; //EARTH + TIME + ORDER
+    public static ICompoundType SPIRITUAL; //LIFE + ORDER
 
-    public static ICompoundType PLANT; //SEED + TIME
+    public static ICompoundType PLANTLIKE; //SEED + TIME
+    public static ICompoundType METALIC; //ELEMENTAL + EARTH + TIME
+    public static ICompoundType LIGHT; //BURNABLE + AIR
+    public static ICompoundType KNOWLEDGE; //LIFE + SPIRITUAL + TIME
 
-    public static ICompoundType TREE; //PLANT + TIME
+    public static ICompoundType EXCHANGE; //KNOWLEDGE + ORDER + CHAOS + TIME
+    public static ICompoundType TREE; //PLANT + MOVEMENT + TIME
+    public static ICompoundType TOOL; //ELEMENTAL + KNOWLEDGE + MOVEMENT
+    public static ICompoundType AUTOMATON; //METALIC + KNOWLEDGE + MOVEMENT
 
-
-
-
-
-    public static ICompoundType RED_STONE;
+    public static ICompoundType MACHINE; //TOOL + AUTOMATON + KNOWLEDGE
+    public static ICompoundType DEFENSE; //TOOL + LIFE + KNOWLEDGE
+    public static ICompoundType HARVEST; //TOOL + PLANT + KNOWLEDGE
+    public static ICompoundType PRODUCTION; //TOOL + AUTOMATON + KNOWLEDGE
 
 }
