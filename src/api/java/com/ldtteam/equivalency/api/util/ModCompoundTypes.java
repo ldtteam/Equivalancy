@@ -11,8 +11,8 @@ public final class ModCompoundTypes
     }
 
     public static ICompoundType AIR;
-    public static ICompoundType STONE;
     public static ICompoundType EARTH;
+    public static ICompoundType WATER;
     public static ICompoundType FIRE;
     public static ICompoundType CHAOS;
     public static ICompoundType ORDER;
@@ -24,7 +24,7 @@ public final class ModCompoundTypes
     public static ICompoundType SEED; //EARTH + LIFE
     public static ICompoundType BURNABLE; //FIRE + ENERGY
     public static ICompoundType MOVEMENT; //TIME + LIFE + ENERGY
-    public static ICompoundType ELENTAL; //EARTH + TIME + ORDER
+    public static ICompoundType ELEMTAL; //EARTH + TIME + ORDER
     public static ICompoundType SPIRITUAL; //LIFE + ORDER
 
     public static ICompoundType PLANTLIKE; //SEED + TIME

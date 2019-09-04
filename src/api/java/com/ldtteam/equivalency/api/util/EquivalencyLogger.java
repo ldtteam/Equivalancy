@@ -13,10 +13,25 @@ public class EquivalencyLogger
         log = LogManager.getLogger(Constants.MOD_ID);
     }
 
-    public static void bigWarning(String format, Object... data)
+    public static void startBigWarning(String warningName)
+    {
+        log.warn("*******************   " + warningName + "   *********************");
+    }
+
+    public static void endBigWarning(String warningName)
+    {
+        log.warn("*******************   " + warningName + "   *********************");
+    }
+
+    public static void bigWarningMessage(String format, Object... data)
+    {
+        log.warn("* "+format, data);
+    }
+
+    public static void bigWarningSimple(String format, Object... data)
     {
         log.warn("****************************************");
-        log.warn("* "+format, data);
+        bigWarningMessage(format, data);
         log.warn("****************************************");
     }
 

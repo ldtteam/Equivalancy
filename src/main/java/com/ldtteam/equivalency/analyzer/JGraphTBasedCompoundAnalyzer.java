@@ -1,7 +1,6 @@
 package com.ldtteam.equivalency.analyzer;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.analyzer.jgrapht.ContainerWrapperGraphNode;
 import com.ldtteam.equivalency.analyzer.jgrapht.IAnalysisGraphNode;
@@ -70,6 +69,11 @@ public class JGraphTBasedCompoundAnalyzer
               });
           });
 
+        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().getLockedInformation().keySet().forEach(lockedWrapper -> {
+            final Set<DefaultWeightedEdge> incomingEdgesToRemove = new HashSet<>(recipeGraph.incomingEdgesOf(new ContainerWrapperGraphNode(lockedWrapper)));
+            recipeGraph.removeAllEdges(incomingEdgesToRemove);
+        });
+
         final Set<ContainerWrapperGraphNode> rootNodes = findRootNodes(recipeGraph);
 
         final Set<ContainerWrapperGraphNode> notDefinedGraphNodes = rootNodes
@@ -79,11 +83,13 @@ public class JGraphTBasedCompoundAnalyzer
 
         rootNodes.removeAll(notDefinedGraphNodes);
 
+        EquivalencyLogger.startBigWarning("WARNING: Missing root equivalency data.");
         notDefinedGraphNodes
           .forEach(node -> {
-              EquivalencyLogger.bigWarning(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
+              EquivalencyLogger.bigWarningMessage(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
               recipeGraph.removeVertex(node);
           });
+        EquivalencyLogger.endBigWarning("WARNING: Missing root equivalency data.");
 
         removeDanglingNodes(recipeGraph, rootNodes);
 
@@ -106,6 +112,13 @@ public class JGraphTBasedCompoundAnalyzer
           .forEach(
             v -> resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances())
           );
+
+        EquivalencyLogger.startBigWarning("RESULT: Compound analysis");
+        resultingCompounds.forEach((wrapper, compounds) -> {
+            if (!compounds.isEmpty())
+                EquivalencyLogger.bigWarningMessage("{}: {}", wrapper, compounds);
+        });
+        EquivalencyLogger.endBigWarning("RESULT: Compound analysis");
 
         return resultingCompounds;
     }
@@ -244,6 +257,7 @@ public class JGraphTBasedCompoundAnalyzer
                         .addAll(
                           summedCompoundInstances
                             .stream()
+                            .filter(compoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(neighbor.getWrapper(), compoundInstance.getType()))
                             .map(compoundInstance -> new SimpleCompoundInstance(compoundInstance.getType(), Math.floor(compoundInstance.getAmount() / recipeGraph.getEdgeWeight(recipeGraph.getEdge(node, neighbor)))))
                             .filter(simpleCompoundInstance -> simpleCompoundInstance.getAmount() > 0)
                             .filter(simpleCompoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(neighbor.getWrapper(), simpleCompoundInstance.getType()))

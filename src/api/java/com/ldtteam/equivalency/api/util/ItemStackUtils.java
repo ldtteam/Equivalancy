@@ -300,7 +300,7 @@ public class ItemStackUtils
     {
         if (!isEmpty(itemStack1) &&
               !isEmpty(itemStack2) &&
-              itemStack1.getItem() == itemStack2.getItem() &&
+              itemStack1.getItem().getRegistryName() == itemStack2.getItem().getRegistryName() &&
               (itemStack1.getItemDamage() == itemStack2.getItemDamage() || !matchMeta || itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE))
         {
             // Then sort on NBT

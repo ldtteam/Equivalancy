@@ -9,4 +9,6 @@ public final class Constants
     }
 
     public static final String MOD_ID = "equivalency";
+    public static final String MOD_NAME = "Equivalancy";
+    public static final String MOD_VERSION = "%VERSION%";
 }

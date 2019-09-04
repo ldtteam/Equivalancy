@@ -164,7 +164,7 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
             }
             catch (ClassNotFoundException e)
             {
-                EquivalencyLogger.bigWarning("Unknown class: %s. Maybe save types have changed. Storing in dummy.", jsonObject.get("type"));
+                EquivalencyLogger.bigWarningSimple("Unknown class: %s. Maybe save types have changed. Storing in dummy.", jsonObject.get("type"));
                 return new Dummy(jsonObject);
             }
 

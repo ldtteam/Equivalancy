@@ -15,7 +15,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public interface IEquivalencyAPI
 {
-
     ICompoundContainerWrapperFactoryRegistry getCompoundContainerWrapperFactoryRegistry();
 
     IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry();
