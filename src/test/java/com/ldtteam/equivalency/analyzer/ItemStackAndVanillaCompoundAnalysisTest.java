@@ -2,13 +2,16 @@ package com.ldtteam.equivalency.analyzer;
 
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.bootstrap.CommonBootstrapper;
-import net.minecraft.init.Bootstrap;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
+import net.minecraft.util.registry.Bootstrap;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import org.mockito.Mockito;
 
 public class ItemStackAndVanillaCompoundAnalysisTest
 {
@@ -20,22 +23,27 @@ public class ItemStackAndVanillaCompoundAnalysisTest
         test.calculate();
     }
 
-    @Before
+    private final Logger logger = LogManager.getLogger(BaseGraphTBasedCompoundAnalyzerTest.class);
+    private       World  world;
+
     public void setUp() throws Exception
     {
-        Bootstrap.register();
+        logger.info("Loading vanilla base information.");
+        logger.info("  -> Air blockstate: " + Blocks.AIR.getDefaultState().toString());
+        logger.info("  -> Coal registryname: " + Items.COAL.getRegistryName().toString());
+
+        world = Mockito.mock(World.class);;
 
         //Setup API
-        EquivalencyApi.onRegistryNewRegistry(new RegistryEvent.NewRegistry());
+        EquivalencyApi.onRegisterNewRegistry(new RegistryEvent.NewRegistry());
 
         //Setup base information
         CommonBootstrapper.Bootstrap();
     }
 
-    @Test
     public void calculate()
     {
-        JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer();
-        analyzer.calculate(EquivalencyApi.getInstance().getEquivalencyRecipeRegistry());
+        JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(world);
+        analyzer.calculate();
     }
 }

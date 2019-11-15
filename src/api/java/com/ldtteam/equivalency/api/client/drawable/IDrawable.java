@@ -1,7 +1,7 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Represents drawables.
@@ -13,6 +13,6 @@ public interface IDrawable
     /**
      * Draws this object.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     void draw();
 }

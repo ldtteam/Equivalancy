@@ -1,6 +1,6 @@
 package com.ldtteam.equivalency.api.client.util;
 
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public final class DrawingUtil
         Validate.notNull(drawingCode);
 
         GlStateManager.pushMatrix();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.DestFactor.DST_ALPHA);
         GlStateManager.pushMatrix();
@@ -26,7 +26,7 @@ public final class DrawingUtil
 
         GlStateManager.popMatrix();
         GlStateManager.disableBlend();
-        GlStateManager.disableAlpha();
+        GlStateManager.disableAlphaTest();
         GlStateManager.popMatrix();
     }
 }

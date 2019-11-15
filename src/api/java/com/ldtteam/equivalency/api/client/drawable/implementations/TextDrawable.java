@@ -3,18 +3,17 @@ package com.ldtteam.equivalency.api.client.drawable.implementations;
 import com.ldtteam.equivalency.api.client.drawable.ISizedDrawable;
 import com.ldtteam.equivalency.api.client.util.DrawingUtil;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Vector2d;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class TextDrawable implements ISizedDrawable
 {
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private final FontRenderer   fontRenderer;
     private final ITextComponent string;
 

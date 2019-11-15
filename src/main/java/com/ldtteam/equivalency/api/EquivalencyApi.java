@@ -14,13 +14,11 @@ import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformation
 import com.ldtteam.equivalency.itemstack.equivalent.ItemStackEquivalentHelperRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import net.minecraftforge.registries.RegistryManager;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
 public class EquivalencyApi implements IEquivalencyAPI
 {
     private static EquivalencyApi ourInstance = new EquivalencyApi();
@@ -78,11 +76,11 @@ public class EquivalencyApi implements IEquivalencyAPI
     }
 
     @SubscribeEvent
-    public static void onRegistryNewRegistry(final RegistryEvent.NewRegistry event)
+    public static void onRegisterNewRegistry(final RegistryEvent.NewRegistry event)
     {
         EquivalencyApi.getInstance().compoundTypeRegistry = new RegistryBuilder<ICompoundType>()
           .setType(ICompoundType.class)
-          .setName(new ResourceLocation(Constants.MOD_ID, "recipe"))
+          .setName(new ResourceLocation(Constants.MOD_ID, "compoundType"))
           .allowModification()
           .create();
     }

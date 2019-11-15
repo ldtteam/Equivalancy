@@ -1,7 +1,5 @@
 package com.ldtteam.equivalency.api.compound.container.wrapper;
 
-import net.minecraft.util.ITabCompleter;
-
 import java.util.Set;
 
 /**
@@ -24,12 +22,4 @@ public interface ICompoundContainerWrapper<T> extends Comparable<ICompoundContai
      * @return The amount.
      */
     Double getContentsCount();
-
-    /**
-     * Returns a set of wrappers that this wrapper is equivalent to.
-     * Allows for equivalency between object types (different ItemStacks (oredic), but also ItemStack -> BlockState mappings)
-     *
-     * @return The equivalent mappings.
-     */
-    Set<ICompoundContainerWrapper<?>> isEquivalentTo();
 }

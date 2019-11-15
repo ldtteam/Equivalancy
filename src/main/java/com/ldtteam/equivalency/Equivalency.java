@@ -1,29 +1,28 @@
 package com.ldtteam.equivalency;
 
-import com.ldtteam.equivalency.api.IEquivalencyAPI;
-import com.ldtteam.equivalency.api.util.Constants;
+import com.ldtteam.equivalency.analyzer.EquivalencyReloadListener;
+import com.ldtteam.equivalency.api.EquivalencyApi;
+import net.minecraft.pathfinding.PathFinder;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.annotation.Nonnull;
+// The value here should match an entry in the META-INF/mods.toml file
+@Mod("equivalency")
+public class Equivalency
+{
 
-@Mod(modid = Constants.MOD_ID, name = Constants.MOD_NAME, version = Constants.MOD_VERSION)
-public class Equivalency {
+    // Directly reference a log4j logger.
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    @Nonnull
-    private IEquivalencyAPI api;
-
-    @Nonnull
-    @Mod.Instance
-    private static Equivalency equivalency;
-
-    public static Equivalency getEquivalency() {
-        return equivalency;
+    public Equivalency()
+    {
+        LOGGER.info("Equivalency is starting.");
+        MinecraftForge.EVENT_BUS.addListener(EquivalencyReloadListener::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(EquivalencyReloadListener::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(EquivalencyApi::onRegisterNewRegistry);
     }
 
-    @Nonnull
-    public IEquivalencyAPI getApi() {
-        return api;
-    }
 
-    
 }

@@ -2,8 +2,10 @@ package com.ldtteam.equivalency.bootstrap;
 
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.EquivalencyApi;
+import com.ldtteam.equivalency.api.IEquivalencyAPI;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.ldtteam.equivalency.api.util.ModCompoundTypes;
 import com.ldtteam.equivalency.api.util.TranslationKeys;
@@ -11,151 +13,53 @@ import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
 import com.ldtteam.equivalency.compound.SimpleCompoundType;
 import com.ldtteam.equivalency.compound.container.heat.HeatWrapper;
 import com.ldtteam.equivalency.compound.container.itemstack.ItemStackWrapper;
-import com.ldtteam.equivalency.recipe.OreDictionaryEquivalencyRecipe;
+import com.ldtteam.equivalency.recipe.TagEquivalencyRecipe;
 import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
 import com.ldtteam.equivalency.recipe.SmeltingEquivalancyRecipe;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class CommonBootstrapper
 {
 
+
+
     public static void Bootstrap()
     {
         BootstrapCompoundTypes();
         BootstrapWrapperFactories();
-        BootstrapDefaultCraftingRecipes();
-        BootstrapOreDictionaryInformation();
-        BootstrapDefaultInformation();
         BootstrapEquivalencyHandler();
-    }
-
-    private static void BootstrapOreDictionaryInformation()
-    {
-        Arrays.stream(OreDictionary.getOreNames())
-          .forEach(oreDicName -> {
-              OreDictionary.getOres(oreDicName)
-                .forEach(inputStack -> {
-                    OreDictionary.getOres(oreDicName)
-                      .stream()
-                      .filter(outputStack -> !EquivalencyApi.getInstance().getItemStackEquivalentHelperRegistry().areItemStacksEquivalentExceptForStack(inputStack, outputStack))
-                      .forEach(outputStack -> {
-                          EquivalencyApi.getInstance().getEquivalencyRecipeRegistry()
-                            .registerNewRecipe(new OreDictionaryEquivalencyRecipe(
-                              oreDicName,
-                              Sets.newHashSet(EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(inputStack, (double) inputStack.getCount())),
-                              Sets.newHashSet(EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(outputStack, (double) outputStack.getCount()))
-                            ));
-                      });
-                });
-          });
     }
 
     private static void BootstrapCompoundTypes()
     {
-        ModCompoundTypes.AIR = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_AIR)).setRegistryName("equivalency:air"));
-        ModCompoundTypes.WATER = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_WATER)).setRegistryName("equivalency:stone"));
-        ModCompoundTypes.EARTH = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_EARTH)).setRegistryName("equivalency:earth"));
-        ModCompoundTypes.FIRE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_FIRE)).setRegistryName("equivalency:fire"));
-        ModCompoundTypes.CHAOS = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_CHAOS)).setRegistryName("equivalency:chaos"));
-        ModCompoundTypes.ORDER = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_ORDER)).setRegistryName("equivalency:order"));
+        ModCompoundTypes.AIR = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_AIR)).setRegistryName(new ResourceLocation("equivalency:air")));
+        ModCompoundTypes.WATER = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_WATER)).setRegistryName(new ResourceLocation("equivalency:stone")));
+        ModCompoundTypes.EARTH = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_EARTH)).setRegistryName(new ResourceLocation("equivalency:earth")));
+        ModCompoundTypes.FIRE = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_FIRE)).setRegistryName(new ResourceLocation("equivalency:fire")));
+        ModCompoundTypes.CHAOS = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_CHAOS)).setRegistryName(new ResourceLocation("equivalency:chaos")));
+        ModCompoundTypes.ORDER = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_ORDER)).setRegistryName(new ResourceLocation("equivalency:order")));
 
-        ModCompoundTypes.TREE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_TREE)).setRegistryName("equivalency:tree"));
-        ModCompoundTypes.BURNABLE = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName("equivalency:burnable"));
-        ModCompoundTypes.METALIC = registerCompoundType(new SimpleCompoundType(new TextComponentString(TranslationKeys.COMPOUND_METALIC)).setRegistryName("equivalency:metalic"));
-    }
-
-    private static void BootstrapWrapperFactories()
-    {
-        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new ItemStackWrapper.Factory());
-        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new HeatWrapper.Factory());
-    }
-
-    private static void BootstrapDefaultCraftingRecipes()
-    {
-        CraftingManager.REGISTRY
-          .forEach(CommonBootstrapper::processCraftingRecipe);
-        FurnaceRecipes.instance()
-          .getSmeltingList()
-          .forEach(CommonBootstrapper::processSmeltingRecipe);
-    }
-
-    private static void BootstrapDefaultInformation()
-    {
-        EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry()
-          .registerNewProvider(ItemStack.class, (wrappedStack, compoundType) -> {
-              if (compoundType != ModCompoundTypes.BURNABLE)
-                  return Optional.empty();
-
-              return Optional.of(TileEntityFurnace.isItemFuel(wrappedStack.getContents()));
-          })
-        .registerNewProvider(ItemStack.class, (wrappedStack, compoundType) -> {
-            if (Arrays.stream(OreDictionary.getOreIDs(wrappedStack.getContents())).anyMatch(oreId ->
-                                                                                                 OreDictionary.getOreName(oreId).toLowerCase().contains("ingot")))
-                return Optional.of(compoundType != ModCompoundTypes.EARTH);
-
-            return Optional.empty();
-        });
-
-        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
-          new ItemStack(Blocks.LOG),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.TREE, 8),
-            new SimpleCompoundInstance(ModCompoundTypes.BURNABLE, TileEntityFurnace.getItemBurnTime(new ItemStack(Blocks.LOG)))
-          )
-        );
-
-        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
-          new ItemStack(Blocks.COBBLESTONE),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 8)
-          )
-        ).registerLocking(
-          new ItemStack(Blocks.CLAY),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 4),
-            new SimpleCompoundInstance(ModCompoundTypes.WATER, 4)
-          )
-        ).registerLocking(
-          new ItemStack(Blocks.IRON_ORE, 1, OreDictionary.WILDCARD_VALUE),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
-            new SimpleCompoundInstance(ModCompoundTypes.METALIC, 8)
-          )
-        ).registerLocking(
-          new ItemStack(Blocks.GOLD_ORE, 1, OreDictionary.WILDCARD_VALUE),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
-            new SimpleCompoundInstance(ModCompoundTypes.METALIC, 8)
-          )
-        ).registerLocking(
-          new ItemStack(Blocks.COAL_ORE, 1, OreDictionary.WILDCARD_VALUE),
-          Sets.newHashSet(
-            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
-            new SimpleCompoundInstance(ModCompoundTypes.CHAOS, 4),
-            new SimpleCompoundInstance(ModCompoundTypes.BURNABLE, TileEntityFurnace.getItemBurnTime(new ItemStack(Items.COAL)))
-          )
-        );
-    }
-
-    private static void BootstrapEquivalencyHandler()
-    {
-
+        ModCompoundTypes.TREE = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_TREE)).setRegistryName(new ResourceLocation("equivalency:tree")));
+        ModCompoundTypes.BURNABLE = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName(new ResourceLocation("equivalency:burnable")));
+        ModCompoundTypes.METALIC = registerCompoundType(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_METALIC)).setRegistryName(new ResourceLocation("equivalency:metalic")));
     }
 
     private static ICompoundType registerCompoundType(ICompoundType type)
@@ -164,21 +68,155 @@ public class CommonBootstrapper
         return type;
     }
 
-    private static void processSmeltingRecipe(ItemStack input, ItemStack output)
+    private static void BootstrapWrapperFactories()
     {
-        final ICompoundContainerWrapper<?> inputWrapped = EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(input,
-          (double) input.getCount());
-
-        final ICompoundContainerWrapper<?> outputWrapped = EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(output,
-          (double) output.getCount());
-
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(new SmeltingEquivalancyRecipe(
-          Sets.newHashSet(inputWrapped),
-          Sets.newHashSet(outputWrapped)
-        ));
+        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new ItemStackWrapper.Factory());
+        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new HeatWrapper.Factory());
     }
 
-    private static void processCraftingRecipe(IRecipe iRecipe)
+    private static void BootstrapEquivalencyHandler()
+    {
+    }
+
+    public static void onWorldReload(final World world)
+    {
+        ResetDataForWorld(world);
+
+        BootstrapTagInformation(world);
+        BootstrapDefaultInformation(world);
+        BootstrapDefaultCraftingRecipes(world);
+    }
+
+    private static void ResetDataForWorld(final World world)
+    {
+        EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().resetForWorld(world);
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().resetForWorld(world);
+    }
+
+    private static void BootstrapTagInformation(final World world)
+    {
+        world.getTags().getItems().getTagMap().values().forEach(tag -> {
+            final Collection<ItemStack> stacksInTag = tag.getAllElements()
+                                                        .stream()
+                                                        .map(ItemStack::new)
+                                                        .collect(Collectors.toList());
+
+            stacksInTag.forEach(inputStack -> {
+                stacksInTag
+                  .stream()
+                  .filter(outputStack -> !EquivalencyApi.getInstance().getItemStackEquivalentHelperRegistry().areItemStacksEquivalentExceptForStack(inputStack, outputStack))
+                  .forEach(outputStack -> {
+                      EquivalencyApi.getInstance().getEquivalencyRecipeRegistry()
+                        .registerNewRecipe(
+                          world,
+                          new TagEquivalencyRecipe<>(
+                            tag,
+                            Sets.newHashSet(EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(inputStack, (double) inputStack.getCount())),
+                            Sets.newHashSet(EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(outputStack, (double) outputStack.getCount()))
+                          ));
+                  });
+            });
+        });
+    }
+
+    private static void BootstrapDefaultInformation(@NotNull final World world)
+    {
+        EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry()
+            .registerNewProvider(
+              world,
+              ItemStack.class,
+              (wrappedStack, compoundType) -> {
+                if (compoundType != ModCompoundTypes.BURNABLE)
+                    return Optional.empty();
+
+                return Optional.of(ForgeHooks.getBurnTime(wrappedStack.getContents()) == 0);
+            })
+            .registerNewProvider(
+              world,
+              ItemStack.class,
+              (wrappedStack, compoundType) -> {
+                if (ItemTags.getCollection().getOwningTags(wrappedStack.getContents().getItem()).stream().anyMatch(r -> r.getPath().contains("ingot")))
+                    return Optional.of(compoundType != ModCompoundTypes.EARTH);
+
+                return Optional.empty();
+            });
+
+        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
+          world,
+          new ItemStack(Blocks.OAK_LOG),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.TREE, 8),
+            new SimpleCompoundInstance(ModCompoundTypes.BURNABLE, ForgeHooks.getBurnTime(new ItemStack(Blocks.OAK_LOG)))
+          )
+        );
+
+        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
+          world,
+          new ItemStack(Blocks.COBBLESTONE),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 8)
+          )
+        ).registerLocking(
+          world,
+          new ItemStack(Blocks.CLAY),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 4),
+            new SimpleCompoundInstance(ModCompoundTypes.WATER, 4)
+          )
+        ).registerLocking(
+          world,
+          new ItemStack(Blocks.IRON_ORE, 1),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
+            new SimpleCompoundInstance(ModCompoundTypes.METALIC, 8)
+          )
+        ).registerLocking(
+          world,
+          new ItemStack(Blocks.GOLD_ORE, 1),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
+            new SimpleCompoundInstance(ModCompoundTypes.METALIC, 8)
+          )
+        ).registerLocking(
+          world,
+          new ItemStack(Blocks.COAL_ORE, 1),
+          Sets.newHashSet(
+            new SimpleCompoundInstance(ModCompoundTypes.EARTH, 2),
+            new SimpleCompoundInstance(ModCompoundTypes.CHAOS, 4)
+          )
+        );
+    }
+
+    private static void BootstrapDefaultCraftingRecipes(@NotNull final World world)
+    {
+        world.getRecipeManager().getRecipes(IRecipeType.CRAFTING)
+          .values()
+          .forEach(recipe -> {
+              processCraftingRecipe(world, recipe);
+          });
+
+        world.getRecipeManager().getRecipes(IRecipeType.SMELTING)
+          .values()
+          .forEach(recipe -> {
+              processSmeltingRecipe(world, recipe);
+          });
+    }
+
+    private static void processSmeltingRecipe(@NotNull final World world, IRecipe iRecipe)
+    {
+        processIRecipe(world, iRecipe, SmeltingEquivalancyRecipe::new);
+    }
+
+    private static void processCraftingRecipe(@NotNull final World world, IRecipe iRecipe)
+    {
+        processIRecipe(world, iRecipe, SimpleEquivalancyRecipe::new);
+    }
+
+    private static void processIRecipe(
+      @NotNull final World world,
+      IRecipe iRecipe,
+      BiFunction<Set<ICompoundContainerWrapper<?>>, Set<ICompoundContainerWrapper<?>>, IEquivalencyRecipe> recipeProducer
+    )
     {
         if (iRecipe.getRecipeOutput().isEmpty())
         {
@@ -187,7 +225,7 @@ public class CommonBootstrapper
 
         final NonNullList<Ingredient> ingredients = iRecipe.getIngredients();
         final List<Ingredient> withOutEmptyIngredients = ingredients.stream()
-                                                           .filter(ingredient -> !ingredient.apply(ItemStack.EMPTY) && ingredient.getMatchingStacks().length > 0
+                                                           .filter(ingredient -> !ingredient.test(ItemStack.EMPTY) && ingredient.getMatchingStacks().length > 0
                                                                                    && !ItemStackUtils.isEmpty(ingredient.getMatchingStacks()[0]))
                                                            .collect(Collectors.toList());
 
@@ -215,6 +253,7 @@ public class CommonBootstrapper
           (double) iRecipe.getRecipeOutput().getCount());
 
 
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(new SimpleEquivalancyRecipe(wrappedInput, Sets.newHashSet(outputWrapped)));
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(world, recipeProducer.apply(wrappedInput, Sets.newHashSet(outputWrapped)));
     }
+
 }

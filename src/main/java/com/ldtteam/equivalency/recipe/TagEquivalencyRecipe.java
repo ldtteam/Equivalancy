@@ -2,26 +2,30 @@ package com.ldtteam.equivalency.recipe;
 
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.Set;
 
-public class OreDictionaryEquivalencyRecipe implements IEquivalencyRecipe
+public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
 {
-    private final String oreDictionaryName;
+    private final Tag<T>                            tag;
     private final Set<ICompoundContainerWrapper<?>> inputs;
     private final Set<ICompoundContainerWrapper<?>> outputs;
 
-    public OreDictionaryEquivalencyRecipe(
-      final String oreDictionaryName,
-      final Set<ICompoundContainerWrapper<?>> inputs, final Set<ICompoundContainerWrapper<?>> outputs) {
-        this.oreDictionaryName = oreDictionaryName;
+    public TagEquivalencyRecipe(
+      final Tag<T> tag,
+      final Set<ICompoundContainerWrapper<?>> inputs,
+      final Set<ICompoundContainerWrapper<?>> outputs)
+    {
+        this.tag = tag;
         this.inputs = inputs;
         this.outputs = outputs;
     }
 
-    public String getOreDictionaryName()
+    public Tag<T> getTag()
     {
-        return oreDictionaryName;
+        return tag;
     }
 
     @Override
@@ -49,14 +53,14 @@ public class OreDictionaryEquivalencyRecipe implements IEquivalencyRecipe
         {
             return true;
         }
-        if (!(o instanceof OreDictionaryEquivalencyRecipe))
+        if (!(o instanceof TagEquivalencyRecipe))
         {
             return false;
         }
 
-        final OreDictionaryEquivalencyRecipe that = (OreDictionaryEquivalencyRecipe) o;
+        final TagEquivalencyRecipe that = (TagEquivalencyRecipe) o;
 
-        if (getOreDictionaryName() != null ? !getOreDictionaryName().equals(that.getOreDictionaryName()) : that.getOreDictionaryName() != null)
+        if (getTag() != null ? !getTag().equals(that.getTag()) : that.getTag() != null)
         {
             return false;
         }
@@ -70,7 +74,7 @@ public class OreDictionaryEquivalencyRecipe implements IEquivalencyRecipe
     @Override
     public int hashCode()
     {
-        int result = getOreDictionaryName() != null ? getOreDictionaryName().hashCode() : 0;
+        int result = getTag() != null ? getTag().hashCode() : 0;
         result = 31 * result + (getInputs() != null ? getInputs().hashCode() : 0);
         result = 31 * result + (getOutputs() != null ? getOutputs().hashCode() : 0);
         return result;
@@ -80,7 +84,7 @@ public class OreDictionaryEquivalencyRecipe implements IEquivalencyRecipe
     public String toString()
     {
         return "OreDictionaryEquivalencyRecipe{" +
-                 "oreDictionaryName='" + oreDictionaryName + '\'' +
+                 "oreDictionaryName='" + getTag().getId() + '\'' +
                  ", inputs=" + inputs +
                  ", outputs=" + outputs +
                  '}';

@@ -1,13 +1,11 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven {
-            name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
+        mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
@@ -28,9 +26,7 @@ repositories {
     }
 }
 
-apply plugin: 'idea'
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'jacoco'
+apply plugin: 'net.minecraftforge.gradle'
 
 sourceSets {
     api {
@@ -40,6 +36,7 @@ sourceSets {
         resources {
             srcDir 'src/api/resources'
         }
+        compileClasspath += configurations.getByName("minecraft")
     }
     main {
         java {
@@ -49,6 +46,7 @@ sourceSets {
             srcDir 'src/main/resources'
         }
         compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
     test {
         java {
@@ -57,32 +55,85 @@ sourceSets {
         resources {
             srcDir 'src/test/resources'
         }
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
     }
 }
 
-version = project.minecraftVersion + "-" + System.getenv()["Version"]
+version = modVersion
 group = modGroup
 archivesBaseName = modBaseName
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    version = project.minecraftVersion + "-" + project.forgeVersion
-    runDir = "run"
+    mappings channel: "${project.mcpChannel}", version: "${project.mcpVersion}"
 
-    mappings = project.mcpVersion
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                equivalency {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                equivalency {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'equivalency', '--all', '--output', file('src/generated/resources/')
+
+            mods {
+                equivalency {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
 dependencies {
-    //Thaumcraft
-    deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA26"
-    deobfCompile "baubles:Baubles:1.12:1.5.2"
-    
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft "net.minecraftforge:forge:${project.exactMinecraftVersion}-${project.forgeVersion}"
+
     // compile against the JEI API but do not include it at runtime
-    deobfProvided "mezz.jei:jei_${project.exactMinecraftVersion}:${project.jeiVersion}:api"
+    compileOnly fg.deobf("mezz.jei:jei-${project.exactMinecraftVersion}:${project.jeiVersion}:api")
     // at runtime, use the full JEI jar
-    runtime "mezz.jei:jei_${project.exactMinecraftVersion}:${project.jeiVersion}"
+    runtimeOnly fg.deobf("mezz.jei:jei-${project.exactMinecraftVersion}:${project.jeiVersion}")
 
     // unit testing
     testCompile 'junit:junit:4.11'
@@ -96,94 +147,9 @@ dependencies {
     testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 
     //Utilities
+    apiCompile 'com.intellij:annotations:+@jar'
     compile 'com.intellij:annotations:+@jar'
+    testCompile 'com.intellij:annotations:+@jar'
     compile 'org.jgrapht:jgrapht-core:+'
     compile 'org.jgrapht:jgrapht-ext:+'
 }
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraftVersion
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        // replace version and mcversion
-        expand "version": project.version, "mcversion": project.minecraftVersion
-    }
-
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
-    }
-}
-
-task apiJar(type: Jar) {
-    from sourceSets.api.output
-    classifier 'api'
-}
-
-reobf {
-    jar {}
-    apiJar {}
-}
-
-javadoc {
-    source += sourceSets.api.allSource
-}
-
-//TODO: Create curseforge project and set project id.
-curseforge {
-    if (System.getenv().CURSEAPIKEY != null && System.getenv().CURSERELEASETYPE != null)
-    {
-        apiKey = System.getenv().CURSEAPIKEY
-
-        project {
-            id = '000000'
-
-            changelog = file('build/changelog.md')
-            changelogType = 'markdown'
-            releaseType = System.getenv().CURSERELEASETYPE
-
-            addArtifact apiJar
-        }
-    }
-    else
-    {
-        logger.lifecycle("Cannot run the CurseUpload sequence. No API-Key or release type has been provided.")
-    }
-}
-
-task("createChangelog") {
-    group = 'upload'
-
-    doLast {
-        def teamCityURL = "https://teamcity.minecolonies.com/"
-        def file = new FileOutputStream("build/changelog.md")
-        def out = new BufferedOutputStream(file)
-        def changesXML = new XmlSlurper().parse(teamCityURL + "guestAuth/app/rest/changes?locator=build:(id:" + teamcity["teamcity.build.id"] + ")")
-
-        def changes = changesXML.change
-        println("createChangelog: Identified " + changes.size() + " changes to be written into the changelog.")
-
-        out << "# Equivalency Changelog \n"
-        out << "## Version: _" + version + "_ \n"
-
-        if (changes.size() > 0) {
-            for (int i = 0; i < changes.size(); i++) {
-                def changeDetailsURL = teamCityURL + "guestAuth/app/rest/changes/id:" + changes[i].@id.text()
-                def changeDetailsXml = new XmlSlurper().parse(changeDetailsURL)
-                def changeComment = changeDetailsXml.comment.text().trim()
-
-                out << "* " + changeComment + "\n"
-            }
-        } else {
-            out << "No Changes detected!"
-        }
-
-        out.close()
-    }
-}
-

@@ -2,7 +2,6 @@ package com.ldtteam.equivalency.api.util;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Comparator;
 
@@ -23,21 +22,21 @@ public final class Comparators
                     // Sort on item
                     if (itemStack1.getItem() == itemStack2.getItem()) {
                         // Then sort on meta
-                        if ((itemStack1.getItemDamage() == itemStack2.getItemDamage()) || itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+                        if ((itemStack1.getDamage() == itemStack2.getDamage())) {
                             // Then sort on NBT
-                            if (itemStack1.hasTagCompound() && itemStack2.hasTagCompound()) {
+                            if (itemStack1.hasTag() && itemStack2.hasTag()) {
                                 // Then sort on stack size
                                 if (ItemStack.areItemStackTagsEqual(itemStack1, itemStack2)) {
                                     return (itemStack1.getCount() - itemStack2.getCount());
                                 }
                                 else {
-                                    return itemStack1.getTagCompound().toString().compareTo(itemStack2.getTagCompound().toString());
+                                    return itemStack1.getTag().toString().compareTo(itemStack2.getTag().toString());
                                 }
                             }
-                            else if (!(itemStack1.hasTagCompound()) && itemStack2.hasTagCompound()) {
+                            else if (!(itemStack1.hasTag()) && itemStack2.hasTag()) {
                                 return -1;
                             }
-                            else if (itemStack1.hasTagCompound() && !(itemStack2.hasTagCompound())) {
+                            else if (itemStack1.hasTag() && !(itemStack2.hasTag())) {
                                 return 1;
                             }
                             else {
@@ -45,7 +44,7 @@ public final class Comparators
                             }
                         }
                         else {
-                            return (itemStack1.getItemDamage() - itemStack2.getItemDamage());
+                            return (itemStack1.getDamage() - itemStack2.getDamage());
                         }
                     }
                     else {

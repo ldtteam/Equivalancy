@@ -6,26 +6,20 @@ import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
 import com.ldtteam.equivalency.api.util.Comparators;
-import com.ldtteam.equivalency.api.util.Constants;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
-import com.ldtteam.equivalency.api.util.ItemStackUtils;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.common.util.JsonUtils;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -89,9 +83,9 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         {
             try
             {
-                return new ItemStackWrapper(new ItemStack(JsonToNBT.getTagFromJson(json.getAsJsonObject().get("stack").getAsString())), json.getAsJsonObject().get("count").getAsDouble());
+                return new ItemStackWrapper(ItemStack.read(JsonToNBT.getTagFromJson(json.getAsJsonObject().get("stack").getAsString())), json.getAsJsonObject().get("count").getAsDouble());
             }
-            catch (NBTException e)
+            catch (CommandSyntaxException e)
             {
                 EquivalencyLogger.getLogger().error(e);
             }
@@ -118,7 +112,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         {
             final JsonObject object = new JsonObject();
             object.addProperty("count", src.getContentsCount());
-            object.addProperty("stack", src.getContents().writeToNBT(new NBTTagCompound()).toString());
+            object.addProperty("stack", src.getContents().write(new CompoundNBT()).toString());
             return object;
         }
     }
@@ -140,14 +134,14 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
             return;
         }
 
-        final int[] oreIds = OreDictionary.getOreIDs(stack);
-        if (oreIds.length > 0)
+        final Collection<ResourceLocation> tags = stack.getItem().getTags();
+        if (tags.size() > 0)
         {
-            this.hashCode = OreDictionary.getOres(OreDictionary.getOreName(oreIds[0])).get(0).writeToNBT(new NBTTagCompound()).hashCode();
+            this.hashCode = tags.hashCode();
         }
         else
         {
-            this.hashCode = stack.writeToNBT(new NBTTagCompound()).hashCode();
+            this.hashCode = stack.write(new CompoundNBT()).hashCode();
         }
     }
 
@@ -174,26 +168,6 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         return count;
     }
 
-    /**
-     * Returns a set of wrappers that this wrapper is equivalent to.
-     * Allows for equivalency between object types (different ItemStacks (oredic), but also ItemStack -> BlockState mappings)
-     *
-     * @return The equivalent mappings.
-     */
-    @Override
-    public Set<ICompoundContainerWrapper<?>> isEquivalentTo()
-    {
-        //TODO Add BlockState equivalency somehow.
-        final int[] oreIds = OreDictionary.getOreIDs(stack);
-
-        return Arrays.stream(oreIds)
-          .mapToObj(OreDictionary::getOreName)
-          .flatMap(name -> OreDictionary.getOres(name).stream())
-          .distinct()
-          .map(stack -> EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().wrapInContainer(stack, (double) stack.getCount()))
-          .collect(Collectors.toSet());
-    }
-
     @Override
     public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
     {
@@ -208,7 +182,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         }
 
         final ItemStack otherStack = (ItemStack) contents;
-        if (OreDictionary.itemMatches(stack, otherStack, false))
+        if (stack.getItem().getTags().stream().anyMatch(r -> otherStack.getItem().getTags().contains(r)))
             return 0;
 
         return Comparators.ID_COMPARATOR.compare(stack, otherStack);

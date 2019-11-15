@@ -124,18 +124,6 @@ public class HeatWrapper implements ICompoundContainerWrapper<Heat>
     }
 
     /**
-     * Returns a set of wrappers that this wrapper is equivalent to.
-     * Allows for equivalency between object types (different ItemStacks (oredic), but also ItemStack -> BlockState mappings)
-     *
-     * @return The equivalent mappings.
-     */
-    @Override
-    public Set<ICompoundContainerWrapper<?>> isEquivalentTo()
-    {
-        return Sets.newHashSet();
-    }
-
-    /**
      * Compares this object with the specified object for order.  Returns a
      * negative integer, zero, or a positive integer as this object is less
      * than, equal to, or greater than the specified object.

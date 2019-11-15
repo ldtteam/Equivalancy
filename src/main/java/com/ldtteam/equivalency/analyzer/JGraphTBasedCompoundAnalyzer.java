@@ -12,6 +12,7 @@ import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainer
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
 import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jgrapht.Graph;
@@ -24,17 +25,20 @@ import java.util.stream.Collectors;
 public class JGraphTBasedCompoundAnalyzer
 {
 
-    public Map<ICompoundContainerWrapper<?>, Set<ICompoundInstance>> calculate(@NotNull final IEquivalencyRecipeRegistry registry)
+    private final World world;
+
+    public JGraphTBasedCompoundAnalyzer(final World world) {this.world = world;}
+
+    public Map<ICompoundContainerWrapper<?>, Set<ICompoundInstance>> calculate()
     {
-        Validate.notNull(registry);
         final Map<ICompoundContainerWrapper<?>, Set<ICompoundInstance>> resultingCompounds = new TreeMap<>();
 
         final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
         final Map<ICompoundContainerWrapper<?>, IAnalysisGraphNode> nodes = Maps.newConcurrentMap();
 
-        registry
-          .getRecipes()
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry()
+          .getRecipes(world)
           .forEach(recipe -> {
               final IAnalysisGraphNode recipeGraphNode = new RecipeGraphNode(recipe);
 
@@ -69,7 +73,7 @@ public class JGraphTBasedCompoundAnalyzer
               });
           });
 
-        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().getLockedInformation().keySet().forEach(lockedWrapper -> {
+        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().getLockedInformation(world).keySet().forEach(lockedWrapper -> {
             final Set<DefaultWeightedEdge> incomingEdgesToRemove = new HashSet<>(recipeGraph.incomingEdgesOf(new ContainerWrapperGraphNode(lockedWrapper)));
             recipeGraph.removeAllEdges(incomingEdgesToRemove);
         });
@@ -257,10 +261,10 @@ public class JGraphTBasedCompoundAnalyzer
                         .addAll(
                           summedCompoundInstances
                             .stream()
-                            .filter(compoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(neighbor.getWrapper(), compoundInstance.getType()))
+                            .filter(compoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(world, neighbor.getWrapper(), compoundInstance.getType()))
                             .map(compoundInstance -> new SimpleCompoundInstance(compoundInstance.getType(), Math.floor(compoundInstance.getAmount() / recipeGraph.getEdgeWeight(recipeGraph.getEdge(node, neighbor)))))
                             .filter(simpleCompoundInstance -> simpleCompoundInstance.getAmount() > 0)
-                            .filter(simpleCompoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(neighbor.getWrapper(), simpleCompoundInstance.getType()))
+                            .filter(simpleCompoundInstance -> EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().isCompoundTypeValidForWrapper(world, neighbor.getWrapper(), simpleCompoundInstance.getType()))
                             .collect(Collectors.toSet())
                         );
                   }
@@ -312,7 +316,7 @@ public class JGraphTBasedCompoundAnalyzer
         final Set<ICompoundInstance> lockedInstances = EquivalencyApi
                                                          .getInstance()
                                                          .getLockedCompoundWrapperToTypeRegistry()
-                                                         .getLockedInformation()
+                                                         .getLockedInformation(world)
                                                          .get(createUnitWrapper(wrapper));
 
         if (lockedInstances != null)

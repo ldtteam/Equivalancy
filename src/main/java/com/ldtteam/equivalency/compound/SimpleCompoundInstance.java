@@ -1,11 +1,9 @@
 package com.ldtteam.equivalency.compound;
 
-import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleCompoundInstance implements ICompoundInstance
@@ -55,7 +53,7 @@ public class SimpleCompoundInstance implements ICompoundInstance
     @Override
     public ITextComponent getTranslation()
     {
-        return new TextComponentString(String.format("%s ", getAmount())).appendSibling(getType().getTranslation());
+        return new StringTextComponent(String.format("%s ", getAmount())).appendSibling(getType().getTranslation());
     }
 
     /**

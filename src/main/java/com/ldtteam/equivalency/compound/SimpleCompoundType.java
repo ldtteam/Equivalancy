@@ -2,12 +2,13 @@ package com.ldtteam.equivalency.compound;
 
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class SimpleCompoundType extends IForgeRegistryEntry.Impl<ICompoundType> implements ICompoundType
+public class SimpleCompoundType extends ForgeRegistryEntry<ICompoundType> implements ICompoundType
 {
     private final ITextComponent translation;
 
@@ -171,7 +172,7 @@ public class SimpleCompoundType extends IForgeRegistryEntry.Impl<ICompoundType> 
     public String toString()
     {
         return "SimpleCompoundType{" +
-                 "translation=" + translation.getUnformattedText() +
+                 "translation=" + translation.getString() +
                  '}';
     }
 }

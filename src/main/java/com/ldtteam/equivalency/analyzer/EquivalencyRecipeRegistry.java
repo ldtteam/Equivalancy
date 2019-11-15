@@ -1,18 +1,23 @@
 package com.ldtteam.equivalency.analyzer;
 
+import com.google.common.collect.Maps;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
 {
-    private final Set<IEquivalencyRecipe> recipes = new LinkedHashSet<>();
+    private final Map<World, Set<IEquivalencyRecipe>> recipes = Maps.newConcurrentMap();
+
+    @Override
+    public void resetForWorld(@NotNull final World world)
+    {
+        recipes.remove(world);
+    }
 
     /**
      * Adds a new recipe to the registry.
@@ -22,9 +27,10 @@ public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
      */
     @NotNull
     @Override
-    public IEquivalencyRecipeRegistry registerNewRecipe(@NotNull final IEquivalencyRecipe recipe)
+    public IEquivalencyRecipeRegistry registerNewRecipe(@NotNull final World world, @NotNull final IEquivalencyRecipe recipe)
     {
-        recipes.add(Validate.notNull(recipe));
+        recipes.putIfAbsent(world, new LinkedHashSet<>());
+        recipes.get(world).add(Validate.notNull(recipe));
         return this;
     }
 
@@ -35,8 +41,8 @@ public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
      */
     @NotNull
     @Override
-    public Set<IEquivalencyRecipe> getRecipes()
+    public Set<IEquivalencyRecipe> getRecipes(@NotNull final World world)
     {
-        return recipes;
+        return recipes.get(world);
     }
 }

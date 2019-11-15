@@ -1,5 +1,7 @@
 package com.ldtteam.equivalency.analyzer;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
@@ -8,12 +10,22 @@ import com.ldtteam.equivalency.compound.container.heat.HeatWrapper;
 import com.ldtteam.equivalency.compound.test.TestWrapper;
 import com.ldtteam.equivalency.heat.Heat;
 import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
-import net.minecraft.init.Bootstrap;
+import cpw.mods.modlauncher.Launcher;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import sun.util.resources.cldr.lo.CurrencyNames_lo;
 
 import java.util.Optional;
 
@@ -27,17 +39,21 @@ public class BaseGraphTBasedCompoundAnalyzerTest
         test.calculate();
     }
 
-    @Before
+    private final Logger logger = LogManager.getLogger(BaseGraphTBasedCompoundAnalyzerTest.class);
+    private       World  world;
+
     public void setUp() throws Exception
     {
-        Bootstrap.register();
+        Launcher.main("--gameDir", "../../../../../../run");
+
+        world = Mockito.mock(World.class);
 
         //Setup API
-        EquivalencyApi.onRegistryNewRegistry(new RegistryEvent.NewRegistry());
+        EquivalencyApi.onRegisterNewRegistry(new RegistryEvent.NewRegistry());
 
         //Setup types
-        EquivalencyApi.getInstance().getCompoundTypeRegistry().register(new SimpleCompoundType(new TextComponentString("Wood")).setRegistryName("test:wood"));
-        EquivalencyApi.getInstance().getCompoundTypeRegistry().register(new SimpleCompoundType(new TextComponentString("Burnable")).setRegistryName("test:burnable"));
+        EquivalencyApi.getInstance().getCompoundTypeRegistry().register(new SimpleCompoundType(new StringTextComponent("Wood")).setRegistryName(new ResourceLocation("test:wood")));
+        EquivalencyApi.getInstance().getCompoundTypeRegistry().register(new SimpleCompoundType(new StringTextComponent("Burnable")).setRegistryName(new ResourceLocation("test:burnable")));
 
         //Setup our instances.
         EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new TestWrapper.Factory());
@@ -45,6 +61,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
 
         //Setup recipes
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 2)
           ),
@@ -54,6 +71,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1)
           ),
@@ -63,6 +81,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1)
           ),
@@ -72,6 +91,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 3)
           ),
@@ -83,6 +103,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
 
 
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 1)
           ),
@@ -92,6 +113,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Charcoal", 1)
           ),
@@ -101,6 +123,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+          world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1),
             new HeatWrapper(new Heat(), 200d)
@@ -113,6 +136,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
 
         //Set the locks
         EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
+          world,
           new TestWrapper("Log", 1), Sets.newHashSet(
             new SimpleCompoundInstance(
               EquivalencyApi.getInstance().getCompoundTypeRegistry().getValue(new ResourceLocation("test:wood")),
@@ -125,6 +149,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
           )
         );
         EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().registerLocking(
+          world,
           new HeatWrapper(new Heat(), 1d), Sets.newHashSet(
             new SimpleCompoundInstance(
               EquivalencyApi.getInstance().getCompoundTypeRegistry().getValue(new ResourceLocation("test:burnable")),
@@ -135,6 +160,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
 
         //Set the information providers
         EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().registerNewProvider(
+          world,
           Heat.class,
           (wrapper, type) -> {
               if (!type.getRegistryName().toString().equals("test:burnable"))
@@ -145,6 +171,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
         );
 
         EquivalencyApi.getInstance().getValidCompoundTypeInformationProviderRegistry().registerNewProvider(
+          world,
           TestWrapper.Test.class,
           (wrapper, type) -> {
               if (!wrapper.getContents().getName().equals("Charcoal"))
@@ -155,10 +182,9 @@ public class BaseGraphTBasedCompoundAnalyzerTest
         );
     }
 
-    @Test
     public void calculate()
     {
-        JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer();
-        analyzer.calculate(EquivalencyApi.getInstance().getEquivalencyRecipeRegistry());
+        JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(world);
+        analyzer.calculate();
     }
 }

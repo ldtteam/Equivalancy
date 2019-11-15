@@ -1,7 +1,7 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Vector2d;
 
@@ -12,6 +12,6 @@ public interface ISizedDrawable extends IDrawable
      *
      * @return The requested size on neutral scale.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Vector2d getSize();
 }

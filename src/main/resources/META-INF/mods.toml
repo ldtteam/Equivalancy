@@ -1,0 +1,10 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+[[mods]] #mandatory
+modId="equivalency"
+version="${file.jarVersion}"
+displayName="Equivalency"
+authors="OrionOnline, LDTTeam"
+description='''
+Equivalently trade materials using magic.
+'''

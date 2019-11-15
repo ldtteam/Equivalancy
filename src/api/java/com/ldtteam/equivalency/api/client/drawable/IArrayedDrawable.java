@@ -1,8 +1,8 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Vector2d;
 
@@ -50,7 +50,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * 
      * @return The orientation.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Orientation getOrientation();
 
     /**
@@ -63,7 +63,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * 
      * @return The strategy used during vertical drawing.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     VerticalArrayedDrawingStrategy getVerticalStrategy();
 
     /**
@@ -76,7 +76,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      *
      * @return The strategy used during horizontal drawing.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     HorizontalArrayedDrawingStrategy getHorizontalStrategy();
 
     /**
@@ -84,7 +84,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      *
      * @return The offset between drawables.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Vector2d getOffset();
 
     /**
@@ -104,7 +104,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default void drawVertical()
     {
         GlStateManager.pushMatrix();
@@ -117,10 +117,10 @@ public interface IArrayedDrawable extends ICombiningDrawable
                 case LEFT:
                     break;
                 case CENTER:
-                    GlStateManager.translate((getSize().getX() - iSizedDrawable.getSize().getX()) / 2, 0f, 0f);
+                    GlStateManager.translated((getSize().getX() - iSizedDrawable.getSize().getX()) / 2, 0f, 0f);
                     break;
                 case RIGHT:
-                    GlStateManager.translate(getSize().getX() - iSizedDrawable.getSize().getX(), 0f, 0f);
+                    GlStateManager.translated(getSize().getX() - iSizedDrawable.getSize().getX(), 0f, 0f);
                     break;
             }
 
@@ -128,13 +128,13 @@ public interface IArrayedDrawable extends ICombiningDrawable
 
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0f, iSizedDrawable.getSize().getY() + getOffset().getY(), 0f);
+            GlStateManager.translated(0f, iSizedDrawable.getSize().getY() + getOffset().getY(), 0f);
         });
 
         GlStateManager.popMatrix();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default void drawHorizontal()
     {
         GlStateManager.pushMatrix();
@@ -147,16 +147,16 @@ public interface IArrayedDrawable extends ICombiningDrawable
                 case TOP:
                     break;
                 case CENTER:
-                    GlStateManager.translate(0f, (getSize().getY() - iSizedDrawable.getSize().getY()) / 2,0f);
+                    GlStateManager.translated(0f, (getSize().getY() - iSizedDrawable.getSize().getY()) / 2,0f);
                 case BOTTOM:
-                    GlStateManager.translate(0f, getSize().getY() - iSizedDrawable.getSize().getY(), 0f);
+                    GlStateManager.translated(0f, getSize().getY() - iSizedDrawable.getSize().getY(), 0f);
             }
 
             iSizedDrawable.draw();
 
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(iSizedDrawable.getSize().getX() + getOffset().getX(), 0f, 0f);
+            GlStateManager.translated(iSizedDrawable.getSize().getX() + getOffset().getX(), 0f, 0f);
         });
 
         GlStateManager.popMatrix();
@@ -165,7 +165,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
     /**
      * Defines the possible orientations of the arrayed drawable
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     enum Orientation
     {
         HORIZONTAL,
@@ -176,7 +176,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * Defines the possible strategies used to draw the {@link IDrawable} of the {@link IArrayedDrawable}
      * when drawn in vertical mode.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     enum VerticalArrayedDrawingStrategy
     {
         LEFT,
@@ -188,7 +188,7 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * Defines the possible strategies used to draw the {@link IDrawable} of the {@link IArrayedDrawable}
      * when drawn in horizontal mode.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     enum HorizontalArrayedDrawingStrategy
     {
         TOP,

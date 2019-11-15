@@ -45,18 +45,6 @@ public class Dummy implements ICompoundContainerWrapper<Dummy>
     }
 
     /**
-     * Returns a set of wrappers that this wrapper is equivalent to.
-     * Allows for equivalency between object types (different ItemStacks (oredic), but also ItemStack -> BlockState mappings)
-     *
-     * @return The equivalent mappings.
-     */
-    @Override
-    public Set<ICompoundContainerWrapper<?>> isEquivalentTo()
-    {
-        return Sets.newHashSet();
-    }
-
-    /**
      * The originally stored data.
      *
      * @return The originally stored data.

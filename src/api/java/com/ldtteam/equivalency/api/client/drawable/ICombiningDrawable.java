@@ -1,7 +1,7 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Collection;
 
@@ -12,6 +12,6 @@ public interface ICombiningDrawable extends ISizedDrawable
      *
      * @return The drawables.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     Collection<ISizedDrawable> getDrawables();
 }

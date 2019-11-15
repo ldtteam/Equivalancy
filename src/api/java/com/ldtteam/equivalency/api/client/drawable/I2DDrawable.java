@@ -3,14 +3,11 @@ package com.ldtteam.equivalency.api.client.drawable;
 import com.ldtteam.equivalency.api.client.util.DrawingUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import javax.vecmath.Vector2d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Represents a 2D Drawable and its information.
@@ -23,18 +20,18 @@ public interface I2DDrawable extends ISizedDrawable
      *
      * @return The icon to draw.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     ResourceLocation getIcon();
 
     /**
      * Draws this object.
      */
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     default void draw()
     {
         DrawingUtil.drawWithAlphaAndBlending(() -> {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(getIcon());
+            Minecraft.getInstance().getTextureManager().bindTexture(getIcon());
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
