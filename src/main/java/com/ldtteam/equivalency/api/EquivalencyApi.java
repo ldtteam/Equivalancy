@@ -1,5 +1,6 @@
 package com.ldtteam.equivalency.api;
 
+import com.ldtteam.equivalency.Equivalency;
 import com.ldtteam.equivalency.analyzer.EquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundWrapperToTypeRegistry;
@@ -75,12 +76,11 @@ public class EquivalencyApi implements IEquivalencyAPI
         return iItemStackEquivalentHelperRegistry;
     }
 
-    @SubscribeEvent
     public static void onRegisterNewRegistry(final RegistryEvent.NewRegistry event)
     {
         EquivalencyApi.getInstance().compoundTypeRegistry = new RegistryBuilder<ICompoundType>()
           .setType(ICompoundType.class)
-          .setName(new ResourceLocation(Constants.MOD_ID, "compoundType"))
+          .setName(new ResourceLocation(Constants.MOD_ID, "compound_type"))
           .allowModification()
           .create();
     }

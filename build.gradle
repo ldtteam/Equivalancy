@@ -84,6 +84,7 @@ minecraft {
             mods {
                 equivalency {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -100,6 +101,7 @@ minecraft {
             mods {
                 equivalency {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }
@@ -118,6 +120,7 @@ minecraft {
             mods {
                 equivalency {
                     source sourceSets.main
+                    source sourceSets.api
                 }
             }
         }

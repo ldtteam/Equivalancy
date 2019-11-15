@@ -4,14 +4,9 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+
 public class ItemStackUtils
 {
-
-    /**
-     * Variable representing the empty itemstack in 1.10.
-     * Used for easy updating to 1.11
-     */
-    private static final ItemStack EMPTY = ItemStack.EMPTY;
 
     /**
      * Private constructor to hide the implicit one.
@@ -33,7 +28,7 @@ public class ItemStackUtils
     @NotNull
     public static Boolean isEmpty(@Nullable final ItemStack stack)
     {
-        return stack == null || stack == EMPTY || stack.getCount() <= 0;
+        return stack == null || stack.isEmpty() || stack.getCount() <= 0;
     }
 
     /**

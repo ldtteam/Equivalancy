@@ -4,8 +4,10 @@ import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.itemstack.equivalent.IItemStackEquivalentHelperRegistry;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -13,6 +15,7 @@ import java.util.function.BiFunction;
 public class ItemStackEquivalentHelperRegistry implements IItemStackEquivalentHelperRegistry
 {
     private final Set<BiFunction<ItemStack, ItemStack, Optional<Boolean>>> handlers = Sets.newHashSet();
+    private final Set<ResourceLocation> tags = new HashSet<>();
 
     @Override
     public boolean areItemStacksEquivalentExceptForStack(
@@ -32,5 +35,18 @@ public class ItemStackEquivalentHelperRegistry implements IItemStackEquivalentHe
     {
         handlers.add(handler);
         return this;
+    }
+
+    @Override
+    public IItemStackEquivalentHelperRegistry registerTagNameToInclude(@NotNull final ResourceLocation location)
+    {
+        tags.add(location);
+        return this;
+    }
+
+    @Override
+    public Iterable<ResourceLocation> getTagNamesToInclude()
+    {
+        return tags;
     }
 }
