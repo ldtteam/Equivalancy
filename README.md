@@ -1,2 +1,2 @@
-# PerViamInvenire
-Highspeed caching path finding for minecraft.
+# Equivalency
+Equivalently trade materials using magic
