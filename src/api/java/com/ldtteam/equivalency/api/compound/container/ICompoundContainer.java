@@ -1,12 +1,10 @@
-package com.ldtteam.equivalency.api.compound.container.wrapper;
-
-import java.util.Set;
+package com.ldtteam.equivalency.api.compound.container;
 
 /**
  * Holds a object that is made up out of compounds.
- * @param <T>
+ * @param <T> The type of game object that is held.
  */
-public interface ICompoundContainerWrapper<T> extends Comparable<ICompoundContainerWrapper<?>>
+public interface ICompoundContainer<T> extends Comparable<ICompoundContainer<?>>
 {
 
     /**

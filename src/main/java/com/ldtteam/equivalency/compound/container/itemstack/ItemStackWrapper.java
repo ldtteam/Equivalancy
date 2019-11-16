@@ -1,29 +1,24 @@
 package com.ldtteam.equivalency.compound.container.itemstack;
 
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
 import com.ldtteam.equivalency.api.util.Comparators;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
+import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
+public class ItemStackWrapper implements ICompoundContainer<ItemStack>
 {
 
     public static final class Factory implements ICompoundContainerWrapperFactory<ItemStack>
@@ -50,15 +45,20 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
          * for an ItemStack. Adapt for relevant T implementation.
          *
-         * @param tInstance The instance to wrap.
+         * @param instance The instance to wrap.
          * @param count     The count to wrap.
          * @return The wrapped instance.
          */
         @NotNull
         @Override
-        public ICompoundContainerWrapper<ItemStack> wrap(@NotNull final ItemStack tInstance, @NotNull final double count)
+        public ICompoundContainer<ItemStack> wrap(@NotNull final Object instance, @NotNull final double count)
         {
-            final ItemStack stack = tInstance.copy();
+            if (!(instance instanceof ItemStack))
+                throw new IllegalArgumentException("Instance is not an ItemStack");
+
+            final ItemStack inputStack = (ItemStack) instance;
+
+            final ItemStack stack = inputStack.copy();
             stack.setCount(1);
             return new ItemStackWrapper(stack, count);
         }
@@ -79,7 +79,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          * @throws JsonParseException if json is not in the expected format of {@code typeofT}
          */
         @Override
-        public ICompoundContainerWrapper<ItemStack> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+        public ICompoundContainer<ItemStack> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             try
             {
@@ -108,7 +108,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
          * @return a JsonElement corresponding to the specified object.
          */
         @Override
-        public JsonElement serialize(final ICompoundContainerWrapper<ItemStack> src, final Type typeOfSrc, final JsonSerializationContext context)
+        public JsonElement serialize(final ICompoundContainer<ItemStack> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
             final JsonObject object = new JsonObject();
             object.addProperty("count", src.getContentsCount());
@@ -169,7 +169,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
     }
 
     @Override
-    public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
+    public int compareTo(@NotNull final ICompoundContainer<?> o)
     {
         //Dummies are after us. :D
         if (o instanceof Dummy)
@@ -206,7 +206,7 @@ public class ItemStackWrapper implements ICompoundContainerWrapper<ItemStack>
         {
             return false;
         }
-        return EquivalencyApi.getInstance().getItemStackEquivalentHelperRegistry().areItemStacksEquivalentExceptForStack(this.stack, that.stack);
+        return ItemStackUtils.compareItemStacksIgnoreStackSize(stack, that.stack);
     }
 
     @Override

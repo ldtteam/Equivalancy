@@ -2,6 +2,7 @@ package com.ldtteam.equivalency.api.compound.container.wrapper;
 
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @param <T> The type of compound container this can wrap.
  */
-public interface ICompoundContainerWrapperFactory<T> extends JsonSerializer<ICompoundContainerWrapper<T>>, JsonDeserializer<ICompoundContainerWrapper<T>>
+public interface ICompoundContainerWrapperFactory<T> extends JsonSerializer<ICompoundContainer<T>>, JsonDeserializer<ICompoundContainer<T>>
 {
 
     /**
@@ -31,10 +32,10 @@ public interface ICompoundContainerWrapperFactory<T> extends JsonSerializer<ICom
      * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
      * for an ItemStack. Adapt for relevant T implementation.
      *
-     * @param tInstance The instance to wrap.
+     * @param instance The instance to wrap.
      * @param count The count to wrap.
      * @return The wrapped instance.
      */
     @NotNull
-    ICompoundContainerWrapper<T> wrap(@NotNull final T tInstance, @NotNull final double count);
+    ICompoundContainer<T> wrap(@NotNull final Object instance, @NotNull final double count);
 }

@@ -1,22 +1,28 @@
 package com.ldtteam.equivalency.analyzer;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
-import net.minecraft.world.World;
-import org.apache.commons.lang3.Validate;
+import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
 {
-    private final Map<World, Set<IEquivalencyRecipe>> recipes = Maps.newConcurrentMap();
+    private static final Map<DimensionType, EquivalencyRecipeRegistry> INSTANCES = Maps.newConcurrentMap();
 
-    @Override
-    public void resetForWorld(@NotNull final World world)
+    public static EquivalencyRecipeRegistry getInstance(@NotNull final DimensionType dimensionType)
     {
-        recipes.remove(world);
+        return INSTANCES.computeIfAbsent(dimensionType, (dimType) -> new EquivalencyRecipeRegistry());
+    }
+
+    private final Set<IEquivalencyRecipe> recipes = Sets.newConcurrentHashSet();
+
+    private EquivalencyRecipeRegistry()
+    {
     }
 
     /**
@@ -27,22 +33,20 @@ public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
      */
     @NotNull
     @Override
-    public IEquivalencyRecipeRegistry registerNewRecipe(@NotNull final World world, @NotNull final IEquivalencyRecipe recipe)
+    public IEquivalencyRecipeRegistry register(@NotNull final IEquivalencyRecipe recipe)
     {
-        recipes.putIfAbsent(world, new LinkedHashSet<>());
-        recipes.get(world).add(Validate.notNull(recipe));
+        recipes.add(recipe);
         return this;
     }
 
-    /**
-     * The recipes.
-     *
-     * @return The recipes.
-     */
-    @NotNull
-    @Override
-    public Set<IEquivalencyRecipe> getRecipes(@NotNull final World world)
+    public void reset()
     {
-        return recipes.get(world);
+        recipes.clear();
+    }
+
+    @NotNull
+    public Set<IEquivalencyRecipe> get()
+    {
+        return recipes;
     }
 }

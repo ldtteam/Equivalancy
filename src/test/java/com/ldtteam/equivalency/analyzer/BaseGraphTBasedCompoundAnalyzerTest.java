@@ -1,7 +1,5 @@
 package com.ldtteam.equivalency.analyzer;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
@@ -11,21 +9,13 @@ import com.ldtteam.equivalency.compound.test.TestWrapper;
 import com.ldtteam.equivalency.heat.Heat;
 import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
 import cpw.mods.modlauncher.Launcher;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
-import sun.util.resources.cldr.lo.CurrencyNames_lo;
 
 import java.util.Optional;
 
@@ -60,7 +50,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
         EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new HeatWrapper.Factory());
 
         //Setup recipes
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 2)
@@ -70,7 +60,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
             )
           )
         );
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1)
@@ -80,7 +70,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
             )
           )
         );
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1)
@@ -90,7 +80,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
             )
           )
         );
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 3)
@@ -102,7 +92,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
         );
 
 
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Plank", 1)
@@ -112,7 +102,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
             )
           )
         );
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Charcoal", 1)
@@ -122,7 +112,7 @@ public class BaseGraphTBasedCompoundAnalyzerTest
             )
           )
         );
-        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().registerNewRecipe(
+        EquivalencyApi.getInstance().getEquivalencyRecipeRegistry().register(
           world,
           new SimpleEquivalancyRecipe(Sets.newHashSet(
             new TestWrapper("Log", 1),

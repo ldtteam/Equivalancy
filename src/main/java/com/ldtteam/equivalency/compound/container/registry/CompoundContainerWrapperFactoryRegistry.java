@@ -1,43 +1,67 @@
 package com.ldtteam.equivalency.compound.container.registry;
 
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
-import com.ldtteam.equivalency.api.compound.container.wrapper.registry.ICompoundContainerWrapperFactoryRegistry;
 import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
+import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerWrapperFactoryRegistry;
 import com.ldtteam.equivalency.api.util.CompositeType;
 import com.ldtteam.equivalency.api.util.Configuration;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
 import com.ldtteam.equivalency.api.util.Suppression;
+import net.minecraft.util.Tuple;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class CompoundContainerWrapperFactoryRegistry implements ICompoundContainerWrapperFactoryRegistry
 {
-    private final Map<Class<?>, ICompoundContainerWrapperFactory<?>> factoryMappings = new ConcurrentHashMap<>();
+    private static final CompoundContainerWrapperFactoryRegistry INSTANCE = new CompoundContainerWrapperFactoryRegistry();
 
-    public CompoundContainerWrapperFactoryRegistry()
+    public static CompoundContainerWrapperFactoryRegistry getInstance()
+    {
+        return INSTANCE;
+    }
+
+    private final Map<Class<?>, ICompoundContainerWrapperFactory<?>> factoryMappings = new ConcurrentHashMap<>();
+    private final Map<Tuple<Class<?>, Class<?>>, Function<?, ?>> converters = new ConcurrentHashMap<>();
+
+    private CompoundContainerWrapperFactoryRegistry()
     {
     }
 
     /**
      * Registers a new container factory to this registry.
      *
-     * @param tiCompoundContainerWrapperFactory The compound container factory to register.
+     * @param factory The compound container factory to register.
      * @param <T> The type of compound container (ItemStack, FluidStack, IBlockState etc).
      */
     @Override
-    public <T> void registerFactory(@NotNull final ICompoundContainerWrapperFactory<T> tiCompoundContainerWrapperFactory)
+    public <T> ICompoundContainerWrapperFactoryRegistry registerFactory(@NotNull final ICompoundContainerWrapperFactory<T> factory)
     {
-        notNull(tiCompoundContainerWrapperFactory);
-        factoryMappings.put(tiCompoundContainerWrapperFactory.getContainedTypeClass(), tiCompoundContainerWrapperFactory);
+        notNull(factory);
+        factoryMappings.put(factory.getContainedTypeClass(), factory);
+        return this;
+    }
+
+    @Override
+    public <T, R> ICompoundContainerWrapperFactoryRegistry registerConverter(
+      @NotNull final Class<T> input, @NotNull final Class<R> output, @NotNull final Function<T, R> converter)
+    {
+        if(converters.keySet().stream().anyMatch(t -> t.getA() == input))
+            return this;
+
+        converters.putIfAbsent(new Tuple<>(input, output), converter);
+        return this;
     }
 
     /**
@@ -47,7 +71,6 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
      * @param <T> The type of the compound container to check.
      * @return True when a factory for type T is registered false when not.
      */
-    @Override
     public <T> boolean canBeWrapped(@NotNull final Class<T> clazz)
     {
         notNull(clazz);
@@ -61,7 +84,6 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
      * @param <T> The type of the compound container to check.
      * @return True when a factory for type T is registered false when not.
      */
-    @Override
     public <T> boolean canBeWrapped(@NotNull final T tInstance)
     {
         notNull(tInstance);
@@ -78,10 +100,9 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
      *
      * @return The wrapped instance.
      */
-    @Override
     @SuppressWarnings(Suppression.UNCHECKED)
     @NotNull
-    public <T> ICompoundContainerWrapper<T> wrapInContainer(@NotNull final T tInstance, @NotNull final Double count) throws IllegalArgumentException
+    public <T> ICompoundContainer<T> wrapInContainer(@NotNull final T tInstance, @NotNull final Double count) throws IllegalArgumentException
     {
         notNull(tInstance);
         final Class<T> tClass = (Class<T>) tInstance.getClass();
@@ -95,12 +116,11 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
      * @return The JSON handler.
      */
     @NotNull
-    @Override
     public Gson getJsonHandler()
     {
         final GsonBuilder builder = new GsonBuilder()
           .setLenient()
-          .registerTypeAdapter(ICompoundContainerWrapper.class, new JSONWrapperHandler(this));
+          .registerTypeAdapter(ICompoundContainer.class, new JSONWrapperHandler(this));
 
         if (Configuration.persistence.prettyPrint)
             builder.setPrettyPrinting();
@@ -111,19 +131,61 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
     /**
      * Internal method to get a factory of a given type.
      *
-     * @param clazz The class of the type to get the factory for.
+     * @param output The class of the type to get the factory for.
      * @param <T> The type to get the wrapping factory for.
      * @return An optional, possibly containing the requested factory if registered.
      */
     @NotNull
     @SuppressWarnings(Suppression.UNCHECKED)
-    private <T> Optional<ICompoundContainerWrapperFactory<T>> getFactoryForType(@NotNull final Class<T> clazz)
+    private <T> Optional<ICompoundContainerWrapperFactory<T>> getFactoryForType(@NotNull final Class<T> output)
     {
-        notNull(clazz);
-        return Optional.ofNullable((ICompoundContainerWrapperFactory<T>) factoryMappings.get(clazz));
+        notNull(output);
+        return Optional.ofNullable((ICompoundContainerWrapperFactory<T>) factoryMappings.get(output));
     }
 
-    private final class JSONWrapperHandler implements JsonSerializer<ICompoundContainerWrapper<?>>, JsonDeserializer<ICompoundContainerWrapper<?>>
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
+    @NotNull
+    private <T, R> Optional<Function<T, R>> getConverter(@NotNull final Class<T> input, @NotNull final Class<R> output)
+    {
+        return Optional.ofNullable((Function<T, R>) converters.get(new Tuple<>(input, output)));
+    }
+
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
+    @NotNull
+    private <T> Optional<? extends Map.Entry<Tuple<Class<T>,Class<?>>, Function<T, ?>>> getConverter(@NotNull final Class<T> input)
+    {
+        return converters.entrySet()
+                 .stream()
+                 .filter(e -> e.getKey().getA() == input)
+                 .map(e -> new HashMap.SimpleEntry<Tuple<Class<T>, Class<?>>, Function<T, ?>>(new Tuple<>((Class<T>) e.getKey().getA(), (Class<?>) e.getKey().getB()), (Function<T, ?>) e.getValue()))
+                 .findFirst();
+    }
+
+    @SuppressWarnings("SuspiciousMethodCalls")
+    @NotNull
+    private <T, R> Optional<ICompoundContainerWrapperFactory<R>> getFactoryWithConversion(@NotNull final Class<T> input, @NotNull final Class<R> output)
+    {
+        if (input == output || converters.containsKey(new Tuple<>(input, output)))
+            return getFactoryForType(output);
+
+        return Optional.empty();
+    }
+
+    private <T> Optional<BiFunction<T, Double, ICompoundContainer<?>>> getWrapperExecutor(@NotNull final Class<T> input)
+    {
+
+
+
+        return getConverter(input).map(converterData -> {
+            return new Tuple<Class<?>, Function<T, ?>>(converterData.getKey().getB(), (T inputInstance) -> converterData.getValue().apply(inputInstance));
+        }).map(converterLogic -> {
+            return getFactoryForType(converterLogic.getA()).map(factory -> {
+                return (BiFunction<T, Double, ICompoundContainerWrapperFactory<?>>) (t, aDouble) -> (ICompoundContainerWrapperFactory<?>) factory.wrap(converterLogic.getB().apply(t), aDouble);
+            }).get();
+        })
+    }
+
+    private final class JSONWrapperHandler implements JsonSerializer<ICompoundContainer<?>>, JsonDeserializer<ICompoundContainer<?>>
     {
 
         private final CompoundContainerWrapperFactoryRegistry registry;
@@ -146,7 +208,7 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
          * @throws JsonParseException if json is not in the expected format of {@code typeofT}
          */
         @Override
-        public ICompoundContainerWrapper<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+        public ICompoundContainer<?> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             if (!json.isJsonObject())
                 throw new IllegalArgumentException("Json is not an object");
@@ -175,7 +237,7 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
                 return new Dummy(jsonObject);
             }
 
-            final CompositeType compositeType = new CompositeType(ICompoundContainerWrapper.class, clz);
+            final CompositeType compositeType = new CompositeType(ICompoundContainer.class, clz);
             final Gson partSerializer = buildJsonForClass(compositeType, factory);
 
             return partSerializer.fromJson(jsonObject.get("data"), compositeType);
@@ -196,7 +258,7 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
          * @return a JsonElement corresponding to the specified object.
          */
         @Override
-        public JsonElement serialize(final ICompoundContainerWrapper<?> src, final Type typeOfSrc, final JsonSerializationContext context)
+        public JsonElement serialize(final ICompoundContainer<?> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
             //In case of old dummy data. We just return the original data.
             if (src instanceof Dummy)
@@ -204,7 +266,7 @@ public class CompoundContainerWrapperFactoryRegistry implements ICompoundContain
 
             Validate.notNull(src.getContents());
             final Class<?> clz = src.getContents().getClass();
-            final CompositeType compositeType = new CompositeType(ICompoundContainerWrapper.class, clz);
+            final CompositeType compositeType = new CompositeType(ICompoundContainer.class, clz);
             final ICompoundContainerWrapperFactory<?> factory = registry.getFactoryForType(clz).orElseThrow(() -> new IllegalArgumentException(String.format(
               "No known factory for type: %s",
               clz.getName())));

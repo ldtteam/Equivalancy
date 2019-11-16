@@ -2,7 +2,7 @@ package com.ldtteam.equivalency.compound.information;
 
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProvider;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -10,12 +10,12 @@ import java.util.function.BiFunction;
 
 public class SimpleBiFunctionBasedValidCompoundTypeInformationProvider<T> implements IValidCompoundTypeInformationProvider<T>
 {
-    private final Class<T> clazz;
-    private final BiFunction<ICompoundContainerWrapper<T>, ICompoundType, Optional<Boolean>> biFunction;
+    private final Class<T>                                                            clazz;
+    private final BiFunction<ICompoundContainer<T>, ICompoundType, Optional<Boolean>> biFunction;
 
     public SimpleBiFunctionBasedValidCompoundTypeInformationProvider(
       final Class<T> clazz,
-      final BiFunction<ICompoundContainerWrapper<T>, ICompoundType, Optional<Boolean>> biFunction) {
+      final BiFunction<ICompoundContainer<T>, ICompoundType, Optional<Boolean>> biFunction) {
         this.clazz = clazz;
         this.biFunction = biFunction;
     }
@@ -40,7 +40,7 @@ public class SimpleBiFunctionBasedValidCompoundTypeInformationProvider<T> implem
      */
     @Override
     public Optional<Boolean> canWrapperHaveCompound(
-      @NotNull final ICompoundContainerWrapper<T> wrapper, @NotNull final ICompoundType type)
+      @NotNull final ICompoundContainer<T> wrapper, @NotNull final ICompoundType type)
     {
         return biFunction.apply(wrapper, type);
     }

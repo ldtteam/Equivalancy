@@ -1,22 +1,18 @@
 package com.ldtteam.equivalency.analyzer;
 
-import com.ldtteam.equivalency.api.compound.ICompoundInstance;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
-import com.ldtteam.equivalency.api.util.Constants;
-import com.ldtteam.equivalency.bootstrap.CommonBootstrapper;
+import com.ldtteam.equivalency.bootstrap.WorldBootstrapper;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -36,7 +32,7 @@ public class EquivalencyReloadListener implements IFutureReloadListener
     {
         LOGGER.info("Reloading resources has been triggered, recalculating graph.");
         return CompletableFuture.runAsync(() -> {
-            ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(CommonBootstrapper::onWorldReload);
+            ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(WorldBootstrapper::onWorldReload);
             ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(serverWorld -> {
                 JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(serverWorld);
                 analyzer.calculate();
@@ -54,10 +50,19 @@ public class EquivalencyReloadListener implements IFutureReloadListener
     public static void onServerStarted(final FMLServerStartedEvent serverStartedEvent)
     {
         LOGGER.info("Building initial equivalency graph.");
-        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(CommonBootstrapper::onWorldReload);
+        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(WorldBootstrapper::onWorldReload);
         ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(serverWorld -> {
             JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(serverWorld);
             analyzer.calculate();
         });
+    }
+
+    private static CompletableFuture<Void> performReloadPerWorldAsync()
+    {
+        final List<World> world = new ArrayList<>(ServerLifecycleHooks.getCurrentServer().getWorlds());
+
+        return CompletableFuture.allOf(
+
+        )
     }
 }

@@ -1,17 +1,15 @@
 package com.ldtteam.equivalency.compound.container.heat;
 
-import com.google.common.collect.Sets;
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
 import com.ldtteam.equivalency.heat.Heat;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Set;
 
-public class HeatWrapper implements ICompoundContainerWrapper<Heat>
+public class HeatWrapper implements ICompoundContainer<Heat>
 {
 
     public static final class Factory implements ICompoundContainerWrapperFactory<Heat>
@@ -38,15 +36,18 @@ public class HeatWrapper implements ICompoundContainerWrapper<Heat>
          * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
          * for an ItemStack. Adapt for relevant T implementation.
          *
-         * @param tInstance The instance to wrap.
+         * @param instance The instance to wrap.
          * @param count     The count to wrap.
          * @return The wrapped instance.
          */
         @NotNull
         @Override
-        public ICompoundContainerWrapper<Heat> wrap(@NotNull final Heat tInstance, @NotNull final double count)
+        public ICompoundContainer<Heat> wrap(@NotNull final Object instance, @NotNull final double count)
         {
-            return new HeatWrapper(tInstance, count);
+            if (!(instance instanceof Heat))
+                throw new IllegalArgumentException("Instance is not a Heat object.");
+
+            return new HeatWrapper((Heat) instance, count);
         }
 
         /**
@@ -65,7 +66,7 @@ public class HeatWrapper implements ICompoundContainerWrapper<Heat>
          * @throws JsonParseException if json is not in the expected format of {@code typeofT}
          */
         @Override
-        public ICompoundContainerWrapper<Heat> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+        public ICompoundContainer<Heat> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             return new HeatWrapper(new Heat(), json.getAsDouble());
         }
@@ -85,7 +86,7 @@ public class HeatWrapper implements ICompoundContainerWrapper<Heat>
          * @return a JsonElement corresponding to the specified object.
          */
         @Override
-        public JsonElement serialize(final ICompoundContainerWrapper<Heat> src, final Type typeOfSrc, final JsonSerializationContext context)
+        public JsonElement serialize(final ICompoundContainer<Heat> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
             return new JsonPrimitive(src.getContentsCount());
         }
@@ -163,7 +164,7 @@ public class HeatWrapper implements ICompoundContainerWrapper<Heat>
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
+    public int compareTo(@NotNull final ICompoundContainer<?> o)
     {
         return !(o instanceof HeatWrapper) ? -1 : (int) (getContentsCount() - o.getContentsCount());
     }

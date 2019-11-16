@@ -1,13 +1,14 @@
 package com.ldtteam.equivalency.api;
 
-import com.ldtteam.equivalency.api.compound.ICompoundType;
-import com.ldtteam.equivalency.api.compound.ILockedCompoundWrapperToTypeRegistry;
+import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.api.compound.container.wrapper.registry.ICompoundContainerWrapperFactoryRegistry;
-import com.ldtteam.equivalency.api.itemstack.equivalent.IItemStackEquivalentHelperRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
+import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
+import net.minecraft.world.dimension.DimensionType;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The API for Equivalency.
@@ -15,15 +16,56 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
  */
 public interface IEquivalencyAPI
 {
+
+    /**
+     * Gives access to the registry that handles the callbacks that convert game objects to their wrapped instances.
+     * @return The registry that handles the callbacks used to convert game objects into wrapped counterparts.
+     */
     ICompoundContainerWrapperFactoryRegistry getCompoundContainerWrapperFactoryRegistry();
 
-    IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry();
+    /**
+     * Gives access to a registry which handles the registration of callbacks which can tell the system if two objects are equal to one another.
+     *
+     * @return The registry which handles callbacks for equivalency checks.
+     */
+    IGameObjectEquivalencyHandlerRegistry getGameObjectEquivalencyHandlerRegistry();
 
-    IForgeRegistry<ICompoundType> getCompoundTypeRegistry();
+    /**
+     * Gives access to a registry which handles equivalencies via tags.
+     * @return The registry which allows the analysis engine to take tags into account.
+     */
+    ITagEquivalencyRegistry getTagEquivalencyRegistry();
 
-    ILockedCompoundWrapperToTypeRegistry getLockedCompoundWrapperToTypeRegistry();
+    /**
+     * Gives access to the registry that holds the recipe information for a given dimension.
+     * @param dimensionType The dimension type to get the equivalency recipe information for.
+     * @return The recipe registry for a given dimension.
+     */
+    IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final DimensionType dimensionType);
 
-    IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry();
+    /**
+     * Gives access to the registry that contains the locking information for game objects and wrappers in a given dimension.
+     *
+     * @param dimensionType The dimension type that represents the world for which locking information registry is being retrieved.
+     * @return The registry for locking type information for a given world.
+     */
+    ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final DimensionType dimensionType);
 
-    IItemStackEquivalentHelperRegistry getItemStackEquivalentHelperRegistry();
+    /**
+     * Gives access to the registry that contains the information providers that handle the compound validation logic during analysis for a given dimension.
+     *
+     * @param dimensionType The dimension type.
+     * @return The registry containing information providers that handle the compound validation logic for a given dimension.
+     */
+    IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final DimensionType dimensionType);
+
+    /**
+     * Gives access to the cache that contains the equivalency information after calculation.
+     *
+     * @param dimensionType The dimension type to get the equivalency cache for.
+     * @return The equivalency cache for a given dimension.
+     */
+    IEquivalencyInformationCache getEquivalencyInformationCache(@NotNull final DimensionType dimensionType);
+
+
 }

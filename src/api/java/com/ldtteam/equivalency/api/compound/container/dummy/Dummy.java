@@ -1,18 +1,15 @@
 package com.ldtteam.equivalency.api.compound.container.dummy;
 
-import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 /**
  * Represents a unknown type.
  * Will contain the original JsonData in case of recovery.
  */
-public class Dummy implements ICompoundContainerWrapper<Dummy>
+public class Dummy implements ICompoundContainer<Dummy>
 {
 
     @NotNull
@@ -95,7 +92,7 @@ public class Dummy implements ICompoundContainerWrapper<Dummy>
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
+    public int compareTo(@NotNull final ICompoundContainer<?> o)
     {
         if (!(o instanceof Dummy))
         {

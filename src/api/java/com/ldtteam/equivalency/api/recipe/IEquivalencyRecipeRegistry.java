@@ -1,29 +1,21 @@
 package com.ldtteam.equivalency.api.recipe;
 
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
+/**
+ * A registry containing recipes which the analysis engine uses to determine how compounds are passed from inputs to outputs.
+ */
 public interface IEquivalencyRecipeRegistry
 {
-
-    void resetForWorld(@NotNull final World world);
 
     /**
      * Adds a new recipe to the registry.
      *
      * @param recipe The recipe to add.
-     *
-     * @return The registry.
+     * @return The registry with the recipe added.
      */
     @NotNull
-    IEquivalencyRecipeRegistry registerNewRecipe(@NotNull final World world, @NotNull final IEquivalencyRecipe recipe);
-
-    /**
-     * The recipes.
-     * @return The recipes.
-     */
-    @NotNull
-    Set<IEquivalencyRecipe> getRecipes(@NotNull final World world);
+    IEquivalencyRecipeRegistry register(@NotNull final IEquivalencyRecipe recipe);
 }

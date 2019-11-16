@@ -1,21 +1,19 @@
 package com.ldtteam.equivalency.recipe;
 
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SmeltingEquivalancyRecipe implements IEquivalencyRecipe
 {
-    private final Set<ICompoundContainerWrapper<?>> inputs;
-    private final Set<ICompoundContainerWrapper<?>> outputs;
+    private final Set<ICompoundContainer<?>> inputs;
+    private final Set<ICompoundContainer<?>> outputs;
 
     public SmeltingEquivalancyRecipe(
-      final Set<ICompoundContainerWrapper<?>> inputs,
-      final Set<ICompoundContainerWrapper<?>> outputs) {
+      final Set<ICompoundContainer<?>> inputs,
+      final Set<ICompoundContainer<?>> outputs) {
         this.inputs = inputs;
         this.outputs = outputs;
     }
@@ -26,7 +24,7 @@ public class SmeltingEquivalancyRecipe implements IEquivalencyRecipe
      * @return The inputs.
      */
     @Override
-    public Set<ICompoundContainerWrapper<?>> getInputs()
+    public Set<ICompoundContainer<?>> getInputs()
     {
         return inputs;
     }
@@ -37,7 +35,7 @@ public class SmeltingEquivalancyRecipe implements IEquivalencyRecipe
      * @return The output.
      */
     @Override
-    public Set<ICompoundContainerWrapper<?>> getOutputs()
+    public Set<ICompoundContainer<?>> getOutputs()
     {
         return outputs;
     }

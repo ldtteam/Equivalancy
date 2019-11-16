@@ -1,11 +1,17 @@
 package com.ldtteam.equivalency.api.compound.container.information;
 
 import com.ldtteam.equivalency.api.compound.ICompoundType;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+/**
+ * An interface that describes if a given wrapper of type T is allowed to have the given compound type or not.
+ * This helps the analysis engine determine if a given compound type of an ingredient should be passed on to the recipe output or not.
+ *
+ * @param <T> The type of game object for which this provider can provide information.
+ */
 public interface IValidCompoundTypeInformationProvider<T>
 {
 
@@ -24,5 +30,5 @@ public interface IValidCompoundTypeInformationProvider<T>
      *
      * @return An optional with nothing contained, indicating no preference. Or true or false when a preference is locked.
      */
-    Optional<Boolean> canWrapperHaveCompound(@NotNull final ICompoundContainerWrapper<T> wrapper, @NotNull final ICompoundType type);
+    Optional<Boolean> canWrapperHaveCompound(@NotNull final ICompoundContainer<T> wrapper, @NotNull final ICompoundType type);
 }

@@ -1,22 +1,35 @@
 package com.ldtteam.equivalency.api.compound.container.information;
 
 import com.ldtteam.equivalency.api.compound.ICompoundType;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
-import net.minecraft.world.World;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
+/**
+ * This registry holds callbacks that indicate to the analysis engine if a given compound is allowed to exists on a
+ * given game object or its wrapper.
+ */
 public interface IValidCompoundTypeInformationProviderRegistry
 {
 
-    void resetForWorld(@NotNull final World world);
+    /**
+     * Registers an information provider used during analysis directly.
+     *
+     * @param provider The provider that is being registered.
+     * @return The registry with the provider added.
+     */
+    IValidCompoundTypeInformationProviderRegistry registerNewProvider(@NotNull final IValidCompoundTypeInformationProvider<?> provider);
 
-    IValidCompoundTypeInformationProviderRegistry registerNewProvider(@NotNull final World world, @NotNull final IValidCompoundTypeInformationProvider<?> provider);
-
-    <T> IValidCompoundTypeInformationProviderRegistry registerNewProvider(@NotNull final World world, @NotNull final Class<T> clazz, @NotNull final BiFunction<ICompoundContainerWrapper<T>, ICompoundType, Optional<Boolean>> decider);
-
-    <T> boolean isCompoundTypeValidForWrapper(@NotNull final World world, @NotNull final ICompoundContainerWrapper<T> wrapper, @NotNull final ICompoundType type);
+    /**
+     * Registers an information provider used during analysis.
+     * This information provider is build from the given class and callback.
+     *
+     * @param clazz The class of the game object for which the callback serves as a {@link IValidCompoundTypeInformationProvider}
+     * @param decider The callback that determines if a given compound type is valid for a given game object.
+     * @param <T> The type of the game object.
+     * @return The registry with the provider, constructed from the class and callback, added.
+     */
+    <T> IValidCompoundTypeInformationProviderRegistry registerNewProvider(@NotNull final Class<T> clazz, @NotNull final BiFunction<ICompoundContainer<T>, ICompoundType, Optional<Boolean>> decider);
 }

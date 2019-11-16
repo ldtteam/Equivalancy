@@ -1,15 +1,13 @@
 package com.ldtteam.equivalency.compound.test;
 
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
-import org.assertj.core.util.Sets;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
-import java.util.Set;
 
-public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
+public class TestWrapper implements ICompoundContainer<TestWrapper.Test>
 {
 
     public static final class Test {
@@ -78,15 +76,15 @@ public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
          * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
          * for an ItemStack. Adapt for relevant T implementation.
          *
-         * @param tInstance The instance to wrap.
+         * @param instance The instance to wrap.
          * @param count     The count to wrap.
          * @return The wrapped instance.
          */
         @NotNull
         @Override
-        public ICompoundContainerWrapper<Test> wrap(@NotNull final Test tInstance, @NotNull final double count)
+        public ICompoundContainer<Test> wrap(@NotNull final Object instance, @NotNull final double count)
         {
-            return new TestWrapper(tInstance, count);
+            return new TestWrapper((Test) instance, count);
         }
 
         /**
@@ -105,7 +103,7 @@ public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
          * @throws JsonParseException if json is not in the expected format of {@code typeofT}
          */
         @Override
-        public ICompoundContainerWrapper<Test> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
+        public ICompoundContainer<Test> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             final JsonObject object = (JsonObject) json;
             return new TestWrapper(new Test(object.get("name").getAsString()), object.get("count").getAsDouble());
@@ -126,7 +124,7 @@ public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
          * @return a JsonElement corresponding to the specified object.
          */
         @Override
-        public JsonElement serialize(final ICompoundContainerWrapper<Test> src, final Type typeOfSrc, final JsonSerializationContext context)
+        public JsonElement serialize(final ICompoundContainer<Test> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
             final JsonObject object = new JsonObject();
             object.addProperty("name", src.getContents().name);
@@ -211,7 +209,7 @@ public class TestWrapper implements ICompoundContainerWrapper<TestWrapper.Test>
      *                              from being compared to this object.
      */
     @Override
-    public int compareTo(@NotNull final ICompoundContainerWrapper<?> o)
+    public int compareTo(@NotNull final ICompoundContainer<?> o)
     {
         if (!(o instanceof TestWrapper))
             return -1;

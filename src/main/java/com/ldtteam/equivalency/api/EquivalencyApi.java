@@ -1,24 +1,26 @@
 package com.ldtteam.equivalency.api;
 
-import com.ldtteam.equivalency.Equivalency;
 import com.ldtteam.equivalency.analyzer.EquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
-import com.ldtteam.equivalency.api.compound.ILockedCompoundWrapperToTypeRegistry;
+import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.api.compound.container.wrapper.registry.ICompoundContainerWrapperFactoryRegistry;
-import com.ldtteam.equivalency.api.itemstack.equivalent.IItemStackEquivalentHelperRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
+import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
+import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
 import com.ldtteam.equivalency.api.util.Constants;
-import com.ldtteam.equivalency.compound.LockedCompoundWrapperToTypeRegistry;
+import com.ldtteam.equivalency.compound.LockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.itemstack.equivalent.ItemStackEquivalentHelperRegistry;
+import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
+import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class EquivalencyApi implements IEquivalencyAPI
 {
@@ -29,13 +31,6 @@ public class EquivalencyApi implements IEquivalencyAPI
         return ourInstance;
     }
 
-    private final ICompoundContainerWrapperFactoryRegistry compoundContainerWrapperFactoryRegistry = new CompoundContainerWrapperFactoryRegistry();
-    private final IEquivalencyRecipeRegistry equivalencyRecipeRegistry = new EquivalencyRecipeRegistry();
-    private IForgeRegistry<ICompoundType> compoundTypeRegistry = null;
-    private final ILockedCompoundWrapperToTypeRegistry lockedCompoundWrapperToTypeRegistry = new LockedCompoundWrapperToTypeRegistry();
-    private final IValidCompoundTypeInformationProviderRegistry validCompoundTypeInformationProviderRegistry = new ValidCompoundTypeInformationProviderRegistry();
-    private final IItemStackEquivalentHelperRegistry iItemStackEquivalentHelperRegistry = new ItemStackEquivalentHelperRegistry();
-
     private EquivalencyApi()
     {
     }
@@ -43,42 +38,48 @@ public class EquivalencyApi implements IEquivalencyAPI
     @Override
     public ICompoundContainerWrapperFactoryRegistry getCompoundContainerWrapperFactoryRegistry()
     {
-        return compoundContainerWrapperFactoryRegistry;
+        return CompoundContainerWrapperFactoryRegistry.getInstance();
     }
 
     @Override
-    public IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry()
+    public IGameObjectEquivalencyHandlerRegistry getGameObjectEquivalencyHandlerRegistry()
     {
-        return equivalencyRecipeRegistry;
+        return GameObjectEquivalencyHandlerRegistry.getInstance();
     }
 
     @Override
-    public IForgeRegistry<ICompoundType> getCompoundTypeRegistry()
+    public ITagEquivalencyRegistry getTagEquivalencyRegistry()
     {
-        return compoundTypeRegistry;
+        return TagEquivalencyRegistry.getInstance();
     }
 
     @Override
-    public ILockedCompoundWrapperToTypeRegistry getLockedCompoundWrapperToTypeRegistry()
+    public IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final DimensionType dimensionType)
     {
-        return lockedCompoundWrapperToTypeRegistry;
+        return EquivalencyRecipeRegistry.getInstance(dimensionType);
     }
 
     @Override
-    public IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry()
+    public ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final DimensionType dimensionType)
     {
-        return validCompoundTypeInformationProviderRegistry;
+        return LockedCompoundInformationRegistry.getInstance(dimensionType);
     }
 
     @Override
-    public IItemStackEquivalentHelperRegistry getItemStackEquivalentHelperRegistry()
+    public IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final DimensionType dimensionType)
     {
-        return iItemStackEquivalentHelperRegistry;
+        return ValidCompoundTypeInformationProviderRegistry.getInstance(dimensionType);
+    }
+
+    @Override
+    public IEquivalencyInformationCache getEquivalencyInformationCache(@NotNull final DimensionType dimensionType)
+    {
+        return EquivalencyInformationCache.getInstance(dimensionType);
     }
 
     public static void onRegisterNewRegistry(final RegistryEvent.NewRegistry event)
     {
-        EquivalencyApi.getInstance().compoundTypeRegistry = new RegistryBuilder<ICompoundType>()
+        new RegistryBuilder<ICompoundType>()
           .setType(ICompoundType.class)
           .setName(new ResourceLocation(Constants.MOD_ID, "compound_type"))
           .allowModification()

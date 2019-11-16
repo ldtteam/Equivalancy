@@ -1,22 +1,21 @@
 package com.ldtteam.equivalency.recipe;
 
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.Set;
 
 public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
 {
-    private final Tag<T>                            tag;
-    private final Set<ICompoundContainerWrapper<?>> inputs;
-    private final Set<ICompoundContainerWrapper<?>> outputs;
+    private final Tag<T>                     tag;
+    private final Set<ICompoundContainer<?>> inputs;
+    private final Set<ICompoundContainer<?>> outputs;
 
     public TagEquivalencyRecipe(
       final Tag<T> tag,
-      final Set<ICompoundContainerWrapper<?>> inputs,
-      final Set<ICompoundContainerWrapper<?>> outputs)
+      final Set<ICompoundContainer<?>> inputs,
+      final Set<ICompoundContainer<?>> outputs)
     {
         this.tag = tag;
         this.inputs = inputs;
@@ -29,13 +28,13 @@ public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
     }
 
     @Override
-    public Set<ICompoundContainerWrapper<?>> getInputs()
+    public Set<ICompoundContainer<?>> getInputs()
     {
         return inputs;
     }
 
     @Override
-    public Set<ICompoundContainerWrapper<?>> getOutputs()
+    public Set<ICompoundContainer<?>> getOutputs()
     {
         return outputs;
     }

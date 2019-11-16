@@ -8,12 +8,10 @@ import com.ldtteam.equivalency.analyzer.jgrapht.RecipeGraphNode;
 import com.ldtteam.equivalency.analyzer.jgrapht.SourceGraphNode;
 import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapper;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
 import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -29,16 +27,16 @@ public class JGraphTBasedCompoundAnalyzer
 
     public JGraphTBasedCompoundAnalyzer(final World world) {this.world = world;}
 
-    public Map<ICompoundContainerWrapper<?>, Set<ICompoundInstance>> calculate()
+    public Map<ICompoundContainer<?>, Set<ICompoundInstance>> calculate()
     {
-        final Map<ICompoundContainerWrapper<?>, Set<ICompoundInstance>> resultingCompounds = new TreeMap<>();
+        final Map<ICompoundContainer<?>, Set<ICompoundInstance>> resultingCompounds = new TreeMap<>();
 
         final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
-        final Map<ICompoundContainerWrapper<?>, IAnalysisGraphNode> nodes = Maps.newConcurrentMap();
+        final Map<ICompoundContainer<?>, IAnalysisGraphNode> nodes = Maps.newConcurrentMap();
 
         EquivalencyApi.getInstance().getEquivalencyRecipeRegistry()
-          .getRecipes(world)
+          .get(world)
           .forEach(recipe -> {
               final IAnalysisGraphNode recipeGraphNode = new RecipeGraphNode(recipe);
 
@@ -46,7 +44,7 @@ public class JGraphTBasedCompoundAnalyzer
 
               //Process inputs
               recipe.getInputs().forEach(input -> {
-                  final ICompoundContainerWrapper<?> unitInputWrapper = createUnitWrapper(input);
+                  final ICompoundContainer<?> unitInputWrapper = createUnitWrapper(input);
                   nodes.putIfAbsent(unitInputWrapper, new ContainerWrapperGraphNode(unitInputWrapper));
 
                   final IAnalysisGraphNode inputWrapperGraphNode = nodes.get(unitInputWrapper);
@@ -60,7 +58,7 @@ public class JGraphTBasedCompoundAnalyzer
 
               //Process outputs
               recipe.getOutputs().forEach(output -> {
-                  final ICompoundContainerWrapper<?> unitOutputWrapper = createUnitWrapper(output);
+                  final ICompoundContainer<?> unitOutputWrapper = createUnitWrapper(output);
                   nodes.putIfAbsent(unitOutputWrapper, new ContainerWrapperGraphNode(unitOutputWrapper));
 
                   final IAnalysisGraphNode outputWrapperGraphNode = nodes.get(unitOutputWrapper);
@@ -73,7 +71,7 @@ public class JGraphTBasedCompoundAnalyzer
               });
           });
 
-        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().getLockedInformation(world).keySet().forEach(lockedWrapper -> {
+        EquivalencyApi.getInstance().getLockedCompoundWrapperToTypeRegistry().get(world).keySet().forEach(lockedWrapper -> {
             final Set<DefaultWeightedEdge> incomingEdgesToRemove = new HashSet<>(recipeGraph.incomingEdgesOf(new ContainerWrapperGraphNode(lockedWrapper)));
             recipeGraph.removeAllEdges(incomingEdgesToRemove);
         });
@@ -190,7 +188,7 @@ public class JGraphTBasedCompoundAnalyzer
 
             neighbors.forEach(rootNode -> {
                 //This root node should have embedded information.
-                final ICompoundContainerWrapper<?> unitWrapper = rootNode.getWrapper();
+                final ICompoundContainer<?> unitWrapper = rootNode.getWrapper();
                 rootNode.getCompoundInstances().clear();
                 rootNode.getCompoundInstances().addAll(getLockedInformationInstances(unitWrapper));
             });
@@ -285,7 +283,7 @@ public class JGraphTBasedCompoundAnalyzer
         processingQueue.addAll(nextIterationNodes);
     }
 
-    private ICompoundContainerWrapper<?> createUnitWrapper(@NotNull final ICompoundContainerWrapper<?> wrapper)
+    private ICompoundContainer<?> createUnitWrapper(@NotNull final ICompoundContainer<?> wrapper)
     {
         if (wrapper.getContentsCount() == 1d)
             return wrapper;
@@ -311,12 +309,12 @@ public class JGraphTBasedCompoundAnalyzer
                  .collect(Collectors.toSet());
     }
 
-    private Set<ICompoundInstance> getLockedInformationInstances(@NotNull final ICompoundContainerWrapper<?> wrapper)
+    private Set<ICompoundInstance> getLockedInformationInstances(@NotNull final ICompoundContainer<?> wrapper)
     {
         final Set<ICompoundInstance> lockedInstances = EquivalencyApi
                                                          .getInstance()
                                                          .getLockedCompoundWrapperToTypeRegistry()
-                                                         .getLockedInformation(world)
+                                                         .get(world)
                                                          .get(createUnitWrapper(wrapper));
 
         if (lockedInstances != null)
