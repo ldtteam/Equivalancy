@@ -4,14 +4,16 @@ import com.ldtteam.equivalency.analyzer.EquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
 import com.ldtteam.equivalency.api.util.Constants;
 import com.ldtteam.equivalency.compound.LockedCompoundInformationRegistry;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
@@ -36,9 +38,15 @@ public class EquivalencyApi implements IEquivalencyAPI
     }
 
     @Override
-    public ICompoundContainerWrapperFactoryRegistry getCompoundContainerWrapperFactoryRegistry()
+    public ICompoundContainerFactoryRegistry getCompoundContainerFactoryRegistry()
     {
-        return CompoundContainerWrapperFactoryRegistry.getInstance();
+        return CompoundContainerFactoryRegistry.getInstance();
+    }
+
+    @Override
+    public ICompoundContainerSerializerRegistry getCompoundContainerSerializerRegistry()
+    {
+        return CompoundContainerSerializerRegistry.getInstance();
     }
 
     @Override

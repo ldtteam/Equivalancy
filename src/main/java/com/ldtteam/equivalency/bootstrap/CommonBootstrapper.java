@@ -45,14 +45,22 @@ public class CommonBootstrapper
     public static void Bootstrap()
     {
         BootstrapWrapperFactories();
+        BootstrapSerializerFactories();
         BootstrapEquivalencyHandler();
         BootstrapTagNames();
     }
 
     private static void BootstrapWrapperFactories()
     {
-        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new ItemStackWrapper.Factory());
-        EquivalencyApi.getInstance().getCompoundContainerWrapperFactoryRegistry().registerFactory(new HeatWrapper.Factory());
+        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new ItemStackWrapper.ItemStackFactory());
+        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new ItemStackWrapper.ItemFactory());
+        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new HeatWrapper.Factory());
+    }
+
+    private static void BootstrapSerializerFactories()
+    {
+        EquivalencyApi.getInstance().getCompoundContainerSerializerRegistry().register(new ItemStackWrapper.Serializer());
+        EquivalencyApi.getInstance().getCompoundContainerSerializerRegistry().register(new HeatWrapper.Serializer());
     }
     
     private static void BootstrapTagNames()

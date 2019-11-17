@@ -2,7 +2,8 @@ package com.ldtteam.equivalency.compound.container.heat;
 
 import com.google.gson.*;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
+import com.ldtteam.equivalency.api.compound.container.factory.ICompoundContainerFactory;
+import com.ldtteam.equivalency.api.compound.container.serialization.ICompoundContainerSerializer;
 import com.ldtteam.equivalency.heat.Heat;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,79 +13,45 @@ import java.util.HashMap;
 public class HeatWrapper implements ICompoundContainer<Heat>
 {
 
-    public static final class Factory implements ICompoundContainerWrapperFactory<Heat>
+    public static final class Factory implements ICompoundContainerFactory<Heat, Heat>
     {
 
-        /**
-         * Returns a class that defines what type is contained in the container that this factory produces.
-         * If {@code T == ItemStack} for example this will need to return {@code ItemStack.class}
-         *
-         * @return The class of T
-         */
         @NotNull
         @Override
-        public Class<Heat> getContainedTypeClass()
+        public Class<Heat> getInputType()
         {
             return Heat.class;
         }
 
-        /**
-         * Method used to wrap the instance of T into a wrapper that holds the relevant information and allows for sorting and
-         * efficient storage and compare of two wrapped instances.
-         * <p>
-         * This method should "clone" the given instance and make the clone have unit length. So:
-         * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
-         * for an ItemStack. Adapt for relevant T implementation.
-         *
-         * @param instance The instance to wrap.
-         * @param count     The count to wrap.
-         * @return The wrapped instance.
-         */
         @NotNull
         @Override
-        public ICompoundContainer<Heat> wrap(@NotNull final Object instance, @NotNull final double count)
+        public Class<Heat> getOutputType()
         {
-            if (!(instance instanceof Heat))
-                throw new IllegalArgumentException("Instance is not a Heat object.");
-
-            return new HeatWrapper((Heat) instance, count);
+            return Heat.class;
         }
 
-        /**
-         * Gson invokes this call-back method during deserialization when it encounters a field of the
-         * specified type.
-         * <p>In the implementation of this call-back method, you should consider invoking
-         * {@link JsonDeserializationContext#deserialize(JsonElement, Type)} method to create objects
-         * for any non-trivial field of the returned object. However, you should never invoke it on the
-         * the same type passing {@code json} since that will cause an infinite loop (Gson will call your
-         * call-back method again).
-         *
-         * @param json    The Json data being deserialized
-         * @param typeOfT The type of the Object to deserialize to
-         * @return a deserialized object of the specified type typeOfT which is a subclass of {@code T}
-         *
-         * @throws JsonParseException if json is not in the expected format of {@code typeofT}
-         */
+        @NotNull
+        @Override
+        public ICompoundContainer<Heat> create(@NotNull final Heat instance, @NotNull final double count)
+        {
+            return new HeatWrapper(instance, count);
+        }
+    }
+
+    public static final class Serializer implements ICompoundContainerSerializer<Heat>
+    {
+        @Override
+        public Class<Heat> getType()
+        {
+            return Heat.class;
+        }
+
         @Override
         public ICompoundContainer<Heat> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             return new HeatWrapper(new Heat(), json.getAsDouble());
         }
 
-        /**
-         * Gson invokes this call-back method during serialization when it encounters a field of the
-         * specified type.
-         *
-         * <p>In the implementation of this call-back method, you should consider invoking
-         * {@link JsonSerializationContext#serialize(Object, Type)} method to create JsonElements for any
-         * non-trivial field of the {@code src} object. However, you should never invoke it on the
-         * {@code src} object itself since that will cause an infinite loop (Gson will call your
-         * call-back method again).</p>
-         *
-         * @param src       the object that needs to be converted to Json.
-         * @param typeOfSrc the actual type (fully genericized version) of the source object.
-         * @return a JsonElement corresponding to the specified object.
-         */
         @Override
         public JsonElement serialize(final ICompoundContainer<Heat> src, final Type typeOfSrc, final JsonSerializationContext context)
         {

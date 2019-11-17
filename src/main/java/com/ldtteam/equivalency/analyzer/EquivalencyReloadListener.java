@@ -1,6 +1,8 @@
 package com.ldtteam.equivalency.analyzer;
 
+import com.google.common.collect.Lists;
 import com.ldtteam.equivalency.bootstrap.WorldBootstrapper;
+import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 public class EquivalencyReloadListener implements IFutureReloadListener
 {
@@ -31,13 +34,7 @@ public class EquivalencyReloadListener implements IFutureReloadListener
       final Executor executor1)
     {
         LOGGER.info("Reloading resources has been triggered, recalculating graph.");
-        return CompletableFuture.runAsync(() -> {
-            ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(WorldBootstrapper::onWorldReload);
-            ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(serverWorld -> {
-                JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(serverWorld);
-                analyzer.calculate();
-            });
-        });
+        return performReloadPerWorldAsync();
     }
 
     public static void onServerStarting(final FMLServerStartingEvent serverStartingEvent)
@@ -50,19 +47,22 @@ public class EquivalencyReloadListener implements IFutureReloadListener
     public static void onServerStarted(final FMLServerStartedEvent serverStartedEvent)
     {
         LOGGER.info("Building initial equivalency graph.");
-        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(WorldBootstrapper::onWorldReload);
-        ServerLifecycleHooks.getCurrentServer().getWorlds().forEach(serverWorld -> {
-            JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(serverWorld);
-            analyzer.calculate();
-        });
+        performReloadPerWorldAsync().join();
     }
 
     private static CompletableFuture<Void> performReloadPerWorldAsync()
     {
-        final List<World> world = new ArrayList<>(ServerLifecycleHooks.getCurrentServer().getWorlds());
+        final List<World> world = Lists.newArrayList(ServerLifecycleHooks.getCurrentServer().getWorlds());
 
         return CompletableFuture.allOf(
-
-        )
+            world.stream().map(w -> {
+                return CompletableFuture.runAsync(() -> {
+                    WorldBootstrapper.onWorldReload(w);
+                }).thenRun(() -> {
+                    JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(w);
+                    EquivalencyInformationCache.getInstance(w.getDimension().getType()).set(analyzer.calculate());
+                });
+            }).toArray(CompletableFuture[]::new)
+        );
     }
 }

@@ -1,13 +1,15 @@
 package com.ldtteam.equivalency.compound.container.itemstack;
 
 import com.google.gson.*;
-import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.api.compound.container.wrapper.ICompoundContainerWrapperFactory;
+import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
+import com.ldtteam.equivalency.api.compound.container.factory.ICompoundContainerFactory;
+import com.ldtteam.equivalency.api.compound.container.serialization.ICompoundContainerSerializer;
 import com.ldtteam.equivalency.api.util.Comparators;
 import com.ldtteam.equivalency.api.util.EquivalencyLogger;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.JsonToNBT;
@@ -21,46 +23,65 @@ import java.util.Collection;
 public class ItemStackWrapper implements ICompoundContainer<ItemStack>
 {
 
-    public static final class Factory implements ICompoundContainerWrapperFactory<ItemStack>
+    public static final class ItemStackFactory implements ICompoundContainerFactory<ItemStack, ItemStack>
     {
 
-        /**
-         * Returns a class that defines what type is contained in the container that this factory produces.
-         * If {@code T == ItemStack} for example this will need to return {@code ItemStack.class}
-         *
-         * @return The class of T
-         */
         @NotNull
         @Override
-        public Class<ItemStack> getContainedTypeClass()
+        public Class<ItemStack> getInputType()
         {
             return ItemStack.class;
         }
 
-        /**
-         * Method used to wrap the instance of T into a wrapper that holds the relevant information and allows for sorting and
-         * efficient storage and compare of two wrapped instances.
-         * <p>
-         * This method should "clone" the given instance and make the clone have unit length. So:
-         * {@code final ItemStack clone = ItemStack.copy(); clone.setStackSize(1);}
-         * for an ItemStack. Adapt for relevant T implementation.
-         *
-         * @param instance The instance to wrap.
-         * @param count     The count to wrap.
-         * @return The wrapped instance.
-         */
         @NotNull
         @Override
-        public ICompoundContainer<ItemStack> wrap(@NotNull final Object instance, @NotNull final double count)
+        public Class<ItemStack> getOutputType()
         {
-            if (!(instance instanceof ItemStack))
-                throw new IllegalArgumentException("Instance is not an ItemStack");
+            return getInputType();
+        }
 
-            final ItemStack inputStack = (ItemStack) instance;
-
-            final ItemStack stack = inputStack.copy();
+        @Override
+        public ICompoundContainer<ItemStack> create(@NotNull final ItemStack instance, @NotNull final double count)
+        {
+            final ItemStack stack = instance.copy();
             stack.setCount(1);
             return new ItemStackWrapper(stack, count);
+        }
+    }
+
+    public static final class ItemFactory implements ICompoundContainerFactory<Item, ItemStack>
+    {
+
+        @NotNull
+        @Override
+        public Class<Item> getInputType()
+        {
+            return Item.class;
+        }
+
+        @NotNull
+        @Override
+        public Class<ItemStack> getOutputType()
+        {
+            return ItemStack.class;
+        }
+
+        @Override
+        public ICompoundContainer<ItemStack> create(@NotNull final Item instance, @NotNull final double count)
+        {
+            final ItemStack stack = new ItemStack(instance, 1);
+            stack.setCount(1);
+            return new ItemStackWrapper(stack, count);
+        }
+    }
+
+    public static final class Serializer implements ICompoundContainerSerializer<ItemStack>
+    {
+
+        @Override
+        public Class<ItemStack> getType()
+        {
+            return ItemStack.class;
         }
 
         /**
@@ -116,6 +137,8 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
             return object;
         }
     }
+
+
 
     private final ItemStack stack;
     private final double count;

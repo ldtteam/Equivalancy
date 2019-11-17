@@ -10,7 +10,8 @@ import com.ldtteam.equivalency.api.util.ModCompoundTypes;
 import com.ldtteam.equivalency.api.util.TagUtils;
 import com.ldtteam.equivalency.compound.LockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.compound.SimpleCompoundInstance;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
@@ -69,7 +70,7 @@ public final class WorldBootstrapper
 
             final Collection<ICompoundContainer<?>> elementsOfTag = tag.getAllElements()
                                                         .stream()
-                                                        .map(stack -> CompoundContainerWrapperFactoryRegistry.getInstance().wrapInContainer(stack, 1d))
+                                                        .map(stack -> CompoundContainerFactoryRegistry.getInstance().wrapInContainer(stack, 1d))
                                                         .collect(Collectors.toList());
 
             elementsOfTag.forEach(inputStack -> {
@@ -198,18 +199,18 @@ public final class WorldBootstrapper
 
         final Set<ICompoundContainer<?>> wrappedInput = inputStacks
                                                                  .stream()
-                                                                 .map(stack -> CompoundContainerWrapperFactoryRegistry.getInstance()
+                                                                 .map(stack -> CompoundContainerFactoryRegistry.getInstance()
                                                                                  .wrapInContainer(stack, (double) stack.getCount()))
                                                                  .collect(Collectors.toMap(wrapper -> wrapper, wrapper -> wrapper.getContentsCount(), (d1, d2) -> d1 + d2))
                                                                  .entrySet()
                                                                  .stream()
-                                                                 .map(iCompoundContainerWrapperDoubleEntry -> CompoundContainerWrapperFactoryRegistry.getInstance()
+                                                                 .map(iCompoundContainerWrapperDoubleEntry -> CompoundContainerFactoryRegistry.getInstance()
                                                                                                                 .wrapInContainer(iCompoundContainerWrapperDoubleEntry.getKey()
                                                                                                                                    .getContents(),
                                                                                                                   iCompoundContainerWrapperDoubleEntry.getValue()))
                                                                  .collect(Collectors.toSet());
 
-        final ICompoundContainer<?> outputWrapped = CompoundContainerWrapperFactoryRegistry.getInstance().wrapInContainer(iRecipe.getRecipeOutput(),
+        final ICompoundContainer<?> outputWrapped = CompoundContainerFactoryRegistry.getInstance().wrapInContainer(iRecipe.getRecipeOutput(),
           (double) iRecipe.getRecipeOutput().getCount());
 
 

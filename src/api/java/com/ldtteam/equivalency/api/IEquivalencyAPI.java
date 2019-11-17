@@ -2,7 +2,8 @@ package com.ldtteam.equivalency.api;
 
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
@@ -21,7 +22,15 @@ public interface IEquivalencyAPI
      * Gives access to the registry that handles the callbacks that convert game objects to their wrapped instances.
      * @return The registry that handles the callbacks used to convert game objects into wrapped counterparts.
      */
-    ICompoundContainerWrapperFactoryRegistry getCompoundContainerWrapperFactoryRegistry();
+    ICompoundContainerFactoryRegistry getCompoundContainerFactoryRegistry();
+
+    /**
+     * Gives access to the registry that handles the callbacks that serialize and deserialize the game object with compounds
+     * from and to disk.
+     *
+     * @return The registry that handles the callbacks for serialization and deserialization of wrapped game objects.
+     */
+    ICompoundContainerSerializerRegistry getCompoundContainerSerializerRegistry();
 
     /**
      * Gives access to a registry which handles the registration of callbacks which can tell the system if two objects are equal to one another.

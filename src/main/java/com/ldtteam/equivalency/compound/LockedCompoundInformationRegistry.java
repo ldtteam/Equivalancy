@@ -6,7 +6,8 @@ import com.google.common.collect.Maps;
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerWrapperFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +46,7 @@ public class LockedCompoundInformationRegistry implements ILockedCompoundInforma
       @NotNull final T tInstance, @NotNull final Set<ICompoundInstance> instances)
     {
         return registerLocking(
-          CompoundContainerWrapperFactoryRegistry.getInstance().wrapInContainer(tInstance, 1d),
+          CompoundContainerFactoryRegistry.getInstance().wrapInContainer(tInstance, 1d),
           instances
         );
     }
