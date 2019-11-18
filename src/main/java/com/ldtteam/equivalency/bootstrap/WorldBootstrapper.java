@@ -64,28 +64,30 @@ public final class WorldBootstrapper
     private static void BootstrapTagInformation(final World world)
     {
         TagEquivalencyRegistry.getInstance().get().forEach(tagName -> {
-            final Tag<?> tag = TagUtils.get(tagName);
-            if (tag == null)
+            final List<Tag<?>> tags = TagUtils.get(tagName);
+            if (tags.isEmpty())
                 return;
 
-            final Collection<ICompoundContainer<?>> elementsOfTag = tag.getAllElements()
-                                                        .stream()
-                                                        .map(stack -> CompoundContainerFactoryRegistry.getInstance().wrapInContainer(stack, 1d))
-                                                        .collect(Collectors.toList());
+            tags.forEach(tag -> {
+                final Collection<ICompoundContainer<?>> elementsOfTag = tag.getAllElements()
+                                                                          .stream()
+                                                                          .map(stack -> CompoundContainerFactoryRegistry.getInstance().wrapInContainer(stack, 1d))
+                                                                          .collect(Collectors.toList());
 
-            elementsOfTag.forEach(inputStack -> {
-                elementsOfTag
-                  .stream()
-                  .filter(outputStack -> !GameObjectEquivalencyHandlerRegistry.getInstance().areGameObjectsEquivalent(inputStack, outputStack))
-                  .forEach(outputStack -> {
-                      EquivalencyApi.getInstance().getEquivalencyRecipeRegistry(world.dimension.getType())
-                        .register(
-                          new TagEquivalencyRecipe<>(
-                            tag,
-                            Sets.newHashSet(inputStack),
-                            Sets.newHashSet(outputStack)
-                          ));
-                  });
+                elementsOfTag.forEach(inputStack -> {
+                    elementsOfTag
+                      .stream()
+                      .filter(outputStack -> !GameObjectEquivalencyHandlerRegistry.getInstance().areGameObjectsEquivalent(inputStack, outputStack))
+                      .forEach(outputStack -> {
+                          EquivalencyApi.getInstance().getEquivalencyRecipeRegistry(world.dimension.getType())
+                            .register(
+                              new TagEquivalencyRecipe<>(
+                                tag,
+                                Sets.newHashSet(inputStack),
+                                Sets.newHashSet(outputStack)
+                              ));
+                      });
+                });
             });
         });
     }

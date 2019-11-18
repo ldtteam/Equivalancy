@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 
-public class HeatWrapper implements ICompoundContainer<Heat>
+public class HeatContainer implements ICompoundContainer<Heat>
 {
 
     public static final class Factory implements ICompoundContainerFactory<Heat, Heat>
@@ -34,7 +34,7 @@ public class HeatWrapper implements ICompoundContainer<Heat>
         @Override
         public ICompoundContainer<Heat> create(@NotNull final Heat instance, @NotNull final double count)
         {
-            return new HeatWrapper(instance, count);
+            return new HeatContainer(instance, count);
         }
     }
 
@@ -49,7 +49,7 @@ public class HeatWrapper implements ICompoundContainer<Heat>
         @Override
         public ICompoundContainer<Heat> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
-            return new HeatWrapper(new Heat(), json.getAsDouble());
+            return new HeatContainer(new Heat(), json.getAsDouble());
         }
 
         @Override
@@ -62,7 +62,7 @@ public class HeatWrapper implements ICompoundContainer<Heat>
     private final Heat heat;
     private final Double count;
 
-    public HeatWrapper(final Heat heat, final Double count)
+    public HeatContainer(final Heat heat, final Double count)
     {
         this.heat = heat;
         this.count = count;
@@ -133,7 +133,7 @@ public class HeatWrapper implements ICompoundContainer<Heat>
     @Override
     public int compareTo(@NotNull final ICompoundContainer<?> o)
     {
-        return !(o instanceof HeatWrapper) ? -1 : (int) (getContentsCount() - o.getContentsCount());
+        return !(o instanceof HeatContainer) ? -1 : (int) (getContentsCount() - o.getContentsCount());
     }
 
     /**
@@ -228,10 +228,10 @@ public class HeatWrapper implements ICompoundContainer<Heat>
     @Override
     public boolean equals(final Object obj)
     {
-        if (!(obj instanceof HeatWrapper))
+        if (!(obj instanceof HeatContainer))
             return false;
 
-        return ((HeatWrapper) obj).getContentsCount().equals(getContentsCount());
+        return ((HeatContainer) obj).getContentsCount().equals(getContentsCount());
     }
 
     @Override

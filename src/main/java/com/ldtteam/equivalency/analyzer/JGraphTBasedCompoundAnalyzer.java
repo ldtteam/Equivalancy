@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 public class JGraphTBasedCompoundAnalyzer
 {
 
+    private static final Object ANALYSIS_LOCK = new Object();
+
     private final World world;
 
     public JGraphTBasedCompoundAnalyzer(final World world) {this.world = world;}
@@ -87,13 +89,16 @@ public class JGraphTBasedCompoundAnalyzer
 
         rootNodes.removeAll(notDefinedGraphNodes);
 
-        EquivalencyLogger.startBigWarning("WARNING: Missing root equivalency data.");
-        notDefinedGraphNodes
-          .forEach(node -> {
-              EquivalencyLogger.bigWarningMessage(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
-              recipeGraph.removeVertex(node);
-          });
-        EquivalencyLogger.endBigWarning("WARNING: Missing root equivalency data.");
+        synchronized (ANALYSIS_LOCK)
+        {
+            EquivalencyLogger.startBigWarning("WARNING: Missing root equivalency data.");
+            notDefinedGraphNodes
+              .forEach(node -> {
+                  EquivalencyLogger.bigWarningMessage(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
+                  recipeGraph.removeVertex(node);
+              });
+            EquivalencyLogger.endBigWarning("WARNING: Missing root equivalency data.");
+        }
 
         removeDanglingNodes(recipeGraph, rootNodes);
 
@@ -117,12 +122,15 @@ public class JGraphTBasedCompoundAnalyzer
             v -> resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances())
           );
 
-        EquivalencyLogger.startBigWarning("RESULT: Compound analysis");
-        resultingCompounds.forEach((wrapper, compounds) -> {
-            if (!compounds.isEmpty())
-                EquivalencyLogger.bigWarningMessage("{}: {}", wrapper, compounds);
-        });
-        EquivalencyLogger.endBigWarning("RESULT: Compound analysis");
+        synchronized (ANALYSIS_LOCK)
+        {
+            EquivalencyLogger.startBigWarning("RESULT: Compound analysis");
+            resultingCompounds.forEach((wrapper, compounds) -> {
+                if (!compounds.isEmpty())
+                    EquivalencyLogger.bigWarningMessage("{}: {}", wrapper, compounds);
+            });
+            EquivalencyLogger.endBigWarning("RESULT: Compound analysis");
+        }
 
         return resultingCompounds;
     }
@@ -176,7 +184,7 @@ public class JGraphTBasedCompoundAnalyzer
 
         Set<IAnalysisGraphNode> nextIterationNodes = Sets.newHashSet();
 
-        EquivalencyLogger.info(String.format("Processing node: %s", node));
+        EquivalencyLogger.fine(String.format("Processing node: %s", node));
 
         if(clazz == SourceGraphNode.class)
         {

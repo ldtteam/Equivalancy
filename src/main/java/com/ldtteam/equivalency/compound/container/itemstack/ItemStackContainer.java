@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.Collection;
 
-public class ItemStackWrapper implements ICompoundContainer<ItemStack>
+public class ItemStackContainer implements ICompoundContainer<ItemStack>
 {
 
     public static final class ItemStackFactory implements ICompoundContainerFactory<ItemStack, ItemStack>
@@ -45,7 +45,7 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
         {
             final ItemStack stack = instance.copy();
             stack.setCount(1);
-            return new ItemStackWrapper(stack, count);
+            return new ItemStackContainer(stack, count);
         }
     }
 
@@ -71,7 +71,7 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
         {
             final ItemStack stack = new ItemStack(instance, 1);
             stack.setCount(1);
-            return new ItemStackWrapper(stack, count);
+            return new ItemStackContainer(stack, count);
         }
     }
 
@@ -84,27 +84,12 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
             return ItemStack.class;
         }
 
-        /**
-         * Gson invokes this call-back method during deserialization when it encounters a field of the
-         * specified type.
-         * <p>In the implementation of this call-back method, you should consider invoking
-         * {@link JsonDeserializationContext#deserialize(JsonElement, Type)} method to create objects
-         * for any non-trivial field of the returned object. However, you should never invoke it on the
-         * the same type passing {@code json} since that will cause an infinite loop (Gson will call your
-         * call-back method again).
-         *
-         * @param json    The Json data being deserialized
-         * @param typeOfT The type of the Object to deserialize to
-         * @return a deserialized object of the specified type typeOfT which is a subclass of {@code T}
-         *
-         * @throws JsonParseException if json is not in the expected format of {@code typeofT}
-         */
         @Override
         public ICompoundContainer<ItemStack> deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException
         {
             try
             {
-                return new ItemStackWrapper(ItemStack.read(JsonToNBT.getTagFromJson(json.getAsJsonObject().get("stack").getAsString())), json.getAsJsonObject().get("count").getAsDouble());
+                return new ItemStackContainer(ItemStack.read(JsonToNBT.getTagFromJson(json.getAsJsonObject().get("stack").getAsString())), json.getAsJsonObject().get("count").getAsDouble());
             }
             catch (CommandSyntaxException e)
             {
@@ -114,20 +99,6 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
             return null;
         }
 
-        /**
-         * Gson invokes this call-back method during serialization when it encounters a field of the
-         * specified type.
-         *
-         * <p>In the implementation of this call-back method, you should consider invoking
-         * {@link JsonSerializationContext#serialize(Object, Type)} method to create JsonElements for any
-         * non-trivial field of the {@code src} object. However, you should never invoke it on the
-         * {@code src} object itself since that will cause an infinite loop (Gson will call your
-         * call-back method again).</p>
-         *
-         * @param src       the object that needs to be converted to Json.
-         * @param typeOfSrc the actual type (fully genericized version) of the source object.
-         * @return a JsonElement corresponding to the specified object.
-         */
         @Override
         public JsonElement serialize(final ICompoundContainer<ItemStack> src, final Type typeOfSrc, final JsonSerializationContext context)
         {
@@ -145,7 +116,7 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
 
     private final int hashCode;
 
-    public ItemStackWrapper(final ItemStack stack, final double count) {
+    public ItemStackContainer(final ItemStack stack, final double count) {
         this.stack = stack.copy();
         this.stack.setCount(1);
 
@@ -218,12 +189,12 @@ public class ItemStackWrapper implements ICompoundContainer<ItemStack>
         {
             return true;
         }
-        if (!(o instanceof ItemStackWrapper))
+        if (!(o instanceof ItemStackContainer))
         {
             return false;
         }
 
-        final ItemStackWrapper that = (ItemStackWrapper) o;
+        final ItemStackContainer that = (ItemStackContainer) o;
 
         if (Double.compare(that.count, count) != 0)
         {

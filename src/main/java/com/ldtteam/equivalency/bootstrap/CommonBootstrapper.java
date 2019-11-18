@@ -6,8 +6,11 @@ import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.ldtteam.equivalency.api.util.ModCompoundTypes;
 import com.ldtteam.equivalency.api.util.TranslationKeys;
 import com.ldtteam.equivalency.compound.SimpleCompoundType;
-import com.ldtteam.equivalency.compound.container.heat.HeatWrapper;
-import com.ldtteam.equivalency.compound.container.itemstack.ItemStackWrapper;
+import com.ldtteam.equivalency.compound.container.blockstate.BlockContainer;
+import com.ldtteam.equivalency.compound.container.heat.HeatContainer;
+import com.ldtteam.equivalency.compound.container.itemstack.ItemStackContainer;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
+import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.item.ItemStack;
@@ -52,15 +55,18 @@ public class CommonBootstrapper
 
     private static void BootstrapWrapperFactories()
     {
-        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new ItemStackWrapper.ItemStackFactory());
-        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new ItemStackWrapper.ItemFactory());
-        EquivalencyApi.getInstance().getCompoundContainerFactoryRegistry().register(new HeatWrapper.Factory());
+        CompoundContainerFactoryRegistry.getInstance().register(new ItemStackContainer.ItemStackFactory());
+        CompoundContainerFactoryRegistry.getInstance().register(new ItemStackContainer.ItemFactory());
+        CompoundContainerFactoryRegistry.getInstance().register(new HeatContainer.Factory());
+        CompoundContainerFactoryRegistry.getInstance().register(new BlockContainer.BlockStateFactory());
+        CompoundContainerFactoryRegistry.getInstance().register(new BlockContainer.BlockFactory());
     }
 
     private static void BootstrapSerializerFactories()
     {
-        EquivalencyApi.getInstance().getCompoundContainerSerializerRegistry().register(new ItemStackWrapper.Serializer());
-        EquivalencyApi.getInstance().getCompoundContainerSerializerRegistry().register(new HeatWrapper.Serializer());
+        CompoundContainerSerializerRegistry.getInstance().register(new ItemStackContainer.Serializer());
+        CompoundContainerSerializerRegistry.getInstance().register(new HeatContainer.Serializer());
+        CompoundContainerSerializerRegistry.getInstance().register(new BlockContainer.Serializer());
     }
     
     private static void BootstrapTagNames()
