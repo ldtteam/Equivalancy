@@ -28,16 +28,16 @@ public class CommonBootstrapper
 {
     public static void BootstrapCompoundTypes(final RegistryEvent.Register<ICompoundType> register)
     {
-        ModCompoundTypes.AIR = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_AIR)).setRegistryName(new ResourceLocation("equivalency:air")));
-        ModCompoundTypes.WATER = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_WATER)).setRegistryName(new ResourceLocation("equivalency:stone")));
-        ModCompoundTypes.EARTH = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_EARTH)).setRegistryName(new ResourceLocation("equivalency:earth")));
-        ModCompoundTypes.FIRE = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_FIRE)).setRegistryName(new ResourceLocation("equivalency:fire")));
-        ModCompoundTypes.CHAOS = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_CHAOS)).setRegistryName(new ResourceLocation("equivalency:chaos")));
-        ModCompoundTypes.ORDER = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_ORDER)).setRegistryName(new ResourceLocation("equivalency:order")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_AIR)).setRegistryName(new ResourceLocation("equivalency:air")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_WATER)).setRegistryName(new ResourceLocation("equivalency:stone")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_EARTH)).setRegistryName(new ResourceLocation("equivalency:earth")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_FIRE)).setRegistryName(new ResourceLocation("equivalency:fire")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_CHAOS)).setRegistryName(new ResourceLocation("equivalency:chaos")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_ORDER)).setRegistryName(new ResourceLocation("equivalency:order")));
 
-        ModCompoundTypes.TREE = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_TREE)).setRegistryName(new ResourceLocation("equivalency:tree")));
-        ModCompoundTypes.BURNABLE = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName(new ResourceLocation("equivalency:burnable")));
-        ModCompoundTypes.METALIC = registerCompoundType(register.getRegistry(), new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_METALIC)).setRegistryName(new ResourceLocation("equivalency:metalic")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_TREE)).setRegistryName(new ResourceLocation("equivalency:tree")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName(new ResourceLocation("equivalency:burnable")));
+        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_METALIC)).setRegistryName(new ResourceLocation("equivalency:metalic")));
     }
 
     private static ICompoundType registerCompoundType(final IForgeRegistry<ICompoundType> registry, final ICompoundType type)
