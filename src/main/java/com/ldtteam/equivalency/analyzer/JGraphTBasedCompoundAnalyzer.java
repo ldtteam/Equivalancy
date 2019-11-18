@@ -89,17 +89,6 @@ public class JGraphTBasedCompoundAnalyzer
 
         rootNodes.removeAll(notDefinedGraphNodes);
 
-        synchronized (ANALYSIS_LOCK)
-        {
-            EquivalencyLogger.startBigWarning("WARNING: Missing root equivalency data.");
-            notDefinedGraphNodes
-              .forEach(node -> {
-                  EquivalencyLogger.bigWarningMessage(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
-                  recipeGraph.removeVertex(node);
-              });
-            EquivalencyLogger.endBigWarning("WARNING: Missing root equivalency data.");
-        }
-
         removeDanglingNodes(recipeGraph, rootNodes);
 
         final SourceGraphNode source = new SourceGraphNode();
@@ -119,8 +108,30 @@ public class JGraphTBasedCompoundAnalyzer
           .filter(v -> v instanceof ContainerWrapperGraphNode)
           .map(v-> (ContainerWrapperGraphNode) v)
           .forEach(
-            v -> resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances())
+            v -> {
+                //We could not find any information on this, possibly due to it being in a different set,
+                //Or it is not producible. Register it as a not defined graph node.
+                if (v.getCompoundInstances().size() == 0)
+                {
+                    notDefinedGraphNodes.add(v);
+                }
+                else
+                {
+                    resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances());
+                }
+            }
           );
+
+        synchronized (ANALYSIS_LOCK)
+        {
+            EquivalencyLogger.startBigWarning("WARNING: Missing root equivalency data.");
+            notDefinedGraphNodes
+              .forEach(node -> {
+                  EquivalencyLogger.bigWarningMessage(String.format("Missing root information for: %s. Removing from recipe graph.", node.getWrapper()));
+                  recipeGraph.removeVertex(node);
+              });
+            EquivalencyLogger.endBigWarning("WARNING: Missing root equivalency data.");
+        }
 
         synchronized (ANALYSIS_LOCK)
         {

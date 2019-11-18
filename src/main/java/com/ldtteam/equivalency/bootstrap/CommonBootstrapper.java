@@ -13,6 +13,7 @@ import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFact
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
@@ -248,6 +249,13 @@ public class CommonBootstrapper
           .registerNewHandler(
             ItemStack.class,
             (left, right) -> Optional.of(ItemStackUtils.compareItemStacksIgnoreStackSize(left.getContents(), right.getContents()))
+          );
+
+        //Handle block equivalency:
+        GameObjectEquivalencyHandlerRegistry.getInstance()
+          .registerNewHandler(
+            Block.class,
+            (left, right) -> Optional.of(left.getContents().getRegistryName().toString().equals(right.getContents().getRegistryName().toString()))
           );
     }
 

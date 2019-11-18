@@ -5,8 +5,11 @@ import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.compound.container.dummy.Dummy;
 import com.ldtteam.equivalency.api.compound.container.factory.ICompoundContainerFactory;
 import com.ldtteam.equivalency.api.compound.container.serialization.ICompoundContainerSerializer;
+import com.ldtteam.equivalency.api.util.ItemStackUtils;
+import com.ldtteam.equivalency.compound.container.itemstack.ItemStackContainer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.capability.wrappers.BlockWrapper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 public class BlockContainer implements ICompoundContainer<Block>
 {
@@ -103,10 +107,21 @@ public class BlockContainer implements ICompoundContainer<Block>
 
     private final Block contents;
     private final Double count;
+    private final int hashCode;
 
     public BlockContainer(final Block contents, final Double count) {
         this.contents = contents;
         this.count = count;
+
+        final Collection<ResourceLocation> tags = contents.getTags();
+        if (tags.size() > 0)
+        {
+            this.hashCode = tags.hashCode();
+        }
+        else
+        {
+            this.hashCode = contents.getRegistryName().hashCode();
+        }
     }
 
     @Override
@@ -142,5 +157,45 @@ public class BlockContainer implements ICompoundContainer<Block>
             return 0;
 
         return ((ForgeRegistry<Block>) ForgeRegistries.BLOCKS).getID(contents) - ((ForgeRegistry<Block>) ForgeRegistries.BLOCKS).getID(otherBlock);
+    }
+
+    @Override
+    public boolean equals(final Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (!(o instanceof BlockContainer))
+        {
+            return false;
+        }
+
+        final BlockContainer that = (BlockContainer) o;
+
+        if (Double.compare(that.count, count) != 0)
+        {
+            return false;
+        }
+
+        if (contents.getTags().stream().anyMatch(r -> that.contents.getTags().contains(r)))
+            return true;
+
+        return contents.getRegistryName().equals(that.contents.getRegistryName());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return hashCode;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "BlockContainer{" +
+                 "contents=" + contents.getRegistryName() +
+                 ", count=" + count +
+                 '}';
     }
 }

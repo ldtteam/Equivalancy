@@ -4,8 +4,10 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.api.util.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -32,10 +34,12 @@ public class GameObjectEquivalencyHandlerRegistry implements IGameObjectEquivale
         if (left.getContents().getClass() != right.getContents().getClass())
             return false;
 
+        final Set<Class<?>> superTypes = TypeUtils.getAllSuperTypesExcludingObject(left.getContents().getClass());
+
         return handlers
           .entrySet()
           .stream()
-          .filter(e -> e.getKey() == left.getContents().getClass())
+          .filter(e -> superTypes.contains(e.getKey()))
           .flatMap(e -> e.getValue().stream())
           .map(handler -> handler.apply(left, right))
           .filter(Optional::isPresent)
