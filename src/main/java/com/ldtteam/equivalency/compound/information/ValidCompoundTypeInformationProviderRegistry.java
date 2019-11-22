@@ -7,7 +7,6 @@ import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProvider;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.compound.LockedCompoundInformationRegistry;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 

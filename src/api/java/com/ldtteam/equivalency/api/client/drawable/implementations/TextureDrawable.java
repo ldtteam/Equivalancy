@@ -16,6 +16,10 @@ public class TextureDrawable implements I2DDrawable
     private final ResourceLocation icon;
     private final Vector2d size;
 
+    public TextureDrawable(final ResourceLocation icon) {
+        this(icon, new Vector2d(16, 16));
+    }
+
     public TextureDrawable(final ResourceLocation icon, final Vector2d size) {
         this.icon = icon;
         this.size = size;

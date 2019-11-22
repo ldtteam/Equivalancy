@@ -1,53 +1,36 @@
 package com.ldtteam.equivalency.bootstrap;
 
-import com.ldtteam.equivalency.api.EquivalencyApi;
+import com.ldtteam.equivalency.api.client.drawable.implementations.TextureDrawable;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
-import com.ldtteam.equivalency.api.util.ModCompoundTypes;
-import com.ldtteam.equivalency.api.util.TranslationKeys;
-import com.ldtteam.equivalency.compound.SimpleCompoundType;
+import com.ldtteam.equivalency.api.util.ModCompoundNames;
+import com.ldtteam.equivalency.api.util.ModTextures;
 import com.ldtteam.equivalency.compound.container.blockstate.BlockContainer;
 import com.ldtteam.equivalency.compound.container.heat.HeatContainer;
 import com.ldtteam.equivalency.compound.container.itemstack.ItemStackContainer;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
+import com.ldtteam.equivalency.compound.simple.builder.SimpleCompoundTypeBuilder;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 public class CommonBootstrapper
 {
-    public static void BootstrapCompoundTypes(final RegistryEvent.Register<ICompoundType> register)
-    {
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_AIR)).setRegistryName(new ResourceLocation("equivalency:air")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_WATER)).setRegistryName(new ResourceLocation("equivalency:stone")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_EARTH)).setRegistryName(new ResourceLocation("equivalency:earth")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_FIRE)).setRegistryName(new ResourceLocation("equivalency:fire")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_CHAOS)).setRegistryName(new ResourceLocation("equivalency:chaos")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_ORDER)).setRegistryName(new ResourceLocation("equivalency:order")));
+    private static final Logger LOGGER = LogManager.getLogger();
 
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_TREE)).setRegistryName(new ResourceLocation("equivalency:tree")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_BURNABLE)).setRegistryName(new ResourceLocation("equivalency:burnable")));
-        register.getRegistry().register(new SimpleCompoundType(new StringTextComponent(TranslationKeys.COMPOUND_METALIC)).setRegistryName(new ResourceLocation("equivalency:metalic")));
-    }
-
-    private static ICompoundType registerCompoundType(final IForgeRegistry<ICompoundType> registry, final ICompoundType type)
+    static void Bootstrap()
     {
-        registry.register(type);
-        return type;
-    }
-
-    public static void Bootstrap()
-    {
+        LOGGER.info("Bootstrapping equivalency");
         BootstrapWrapperFactories();
         BootstrapSerializerFactories();
         BootstrapEquivalencyHandler();
@@ -56,6 +39,7 @@ public class CommonBootstrapper
 
     private static void BootstrapWrapperFactories()
     {
+        LOGGER.info("Registering wrapper factories");
         CompoundContainerFactoryRegistry.getInstance().register(new ItemStackContainer.ItemStackFactory());
         CompoundContainerFactoryRegistry.getInstance().register(new ItemStackContainer.ItemFactory());
         CompoundContainerFactoryRegistry.getInstance().register(new HeatContainer.Factory());
@@ -65,13 +49,15 @@ public class CommonBootstrapper
 
     private static void BootstrapSerializerFactories()
     {
+        LOGGER.info("Registering serializers.");
         CompoundContainerSerializerRegistry.getInstance().register(new ItemStackContainer.Serializer());
         CompoundContainerSerializerRegistry.getInstance().register(new HeatContainer.Serializer());
         CompoundContainerSerializerRegistry.getInstance().register(new BlockContainer.Serializer());
     }
-    
+
     private static void BootstrapTagNames()
     {
+        LOGGER.info("Registering tags.");
         TagEquivalencyRegistry.getInstance()
           .addTag(ItemTags.WOOL.getId())
           .addTag(ItemTags.PLANKS.getId())
@@ -244,6 +230,7 @@ public class CommonBootstrapper
 
     private static void BootstrapEquivalencyHandler()
     {
+        LOGGER.info("Registering equivalency handlers.");
         //Handle itemstack equivalency:
         GameObjectEquivalencyHandlerRegistry.getInstance()
           .registerNewHandler(
@@ -258,7 +245,4 @@ public class CommonBootstrapper
             (left, right) -> Optional.of(left.getContents().getRegistryName().toString().equals(right.getContents().getRegistryName().toString()))
           );
     }
-
-
-
 }

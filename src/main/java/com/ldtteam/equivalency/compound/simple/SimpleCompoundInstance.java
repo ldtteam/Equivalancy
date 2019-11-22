@@ -1,4 +1,4 @@
-package com.ldtteam.equivalency.compound;
+package com.ldtteam.equivalency.compound.simple;
 
 import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ICompoundType;

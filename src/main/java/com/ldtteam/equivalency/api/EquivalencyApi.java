@@ -11,7 +11,7 @@ import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyH
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
 import com.ldtteam.equivalency.api.util.Constants;
-import com.ldtteam.equivalency.compound.LockedCompoundInformationRegistry;
+import com.ldtteam.equivalency.compound.information.LockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
@@ -83,14 +83,5 @@ public class EquivalencyApi implements IEquivalencyAPI
     public IEquivalencyInformationCache getEquivalencyInformationCache(@NotNull final DimensionType dimensionType)
     {
         return EquivalencyInformationCache.getInstance(dimensionType);
-    }
-
-    public static void onRegisterNewRegistry(final RegistryEvent.NewRegistry event)
-    {
-        new RegistryBuilder<ICompoundType>()
-          .setType(ICompoundType.class)
-          .setName(new ResourceLocation(Constants.MOD_ID, "compound_type"))
-          .allowModification()
-          .create();
     }
 }

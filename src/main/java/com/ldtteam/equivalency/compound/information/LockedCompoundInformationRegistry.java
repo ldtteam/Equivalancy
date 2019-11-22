@@ -1,4 +1,4 @@
-package com.ldtteam.equivalency.compound;
+package com.ldtteam.equivalency.compound.information;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -7,7 +7,6 @@ import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
-import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 

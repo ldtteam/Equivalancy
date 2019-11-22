@@ -5,6 +5,7 @@ import com.ldtteam.equivalency.api.EquivalencyApi;
 import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.ldtteam.equivalency.bootstrap.CommonBootstrapper;
+import com.ldtteam.equivalency.bootstrap.CompoundTypesRegistrar;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraftforge.common.MinecraftForge;
@@ -20,27 +21,10 @@ import org.apache.logging.log4j.Logger;
 public class Equivalency
 {
 
-    // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Equivalency()
     {
-        LOGGER.info("Equivalency is starting.");
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EquivalencyApi::onRegisterNewRegistry);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ICompoundType.class, CommonBootstrapper::BootstrapCompoundTypes);
-
-        MinecraftForge.EVENT_BUS.addListener(EquivalencyReloadListener::onServerStarting);
-        MinecraftForge.EVENT_BUS.addListener(EquivalencyReloadListener::onServerStarted);
-
+        LOGGER.info("Equivalency is being instantiated.");
     }
-
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        LOGGER.info("Setting up Equivalencies static data.");
-        CommonBootstrapper.Bootstrap();
-    }
-
-
-
 }

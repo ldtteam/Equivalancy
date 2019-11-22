@@ -5,6 +5,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Vector2d;
 
+/**
+ * Represents drawable with a given size.
+ */
 public interface ISizedDrawable extends IDrawable
 {
     /**
