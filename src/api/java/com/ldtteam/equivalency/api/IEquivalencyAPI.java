@@ -8,6 +8,7 @@ import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
+import com.ldtteam.equivalency.gameobject.loottable.ILootTableAnalyserRegistry;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +39,13 @@ public interface IEquivalencyAPI
      * @return The registry which handles callbacks for equivalency checks.
      */
     IGameObjectEquivalencyHandlerRegistry getGameObjectEquivalencyHandlerRegistry();
+
+    /**
+     * Gives access to a registry which handles analysers for equivalencies based on loottables.
+     *
+     * @return The loot table analyser registry.
+     */
+    ILootTableAnalyserRegistry getLootTableAnalyserRegistry();
 
     /**
      * Gives access to a registry which handles equivalencies via tags.

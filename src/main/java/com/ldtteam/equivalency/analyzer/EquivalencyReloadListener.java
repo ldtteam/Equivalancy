@@ -8,6 +8,7 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -57,17 +58,15 @@ public class EquivalencyReloadListener implements IFutureReloadListener
 
     private static CompletableFuture<Void> performReloadPerWorldAsync()
     {
-        final List<World> world = Lists.newArrayList(ServerLifecycleHooks.getCurrentServer().getWorlds());
+        final List<ServerWorld> worlds = Lists.newArrayList(ServerLifecycleHooks.getCurrentServer().getWorlds());
 
         return CompletableFuture.allOf(
-            world.stream().map(w -> {
-                return CompletableFuture.runAsync(() -> {
-                    WorldBootstrapper.onWorldReload(w);
-                }).thenRun(() -> {
-                    JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(w);
-                    EquivalencyInformationCache.getInstance(w.getDimension().getType()).set(analyzer.calculate());
-                });
-            }).toArray(CompletableFuture[]::new)
+            worlds.stream().map(w -> CompletableFuture.runAsync(() -> {
+                WorldBootstrapper.onWorldReload(w);
+            }).thenRun(() -> {
+                JGraphTBasedCompoundAnalyzer analyzer = new JGraphTBasedCompoundAnalyzer(w);
+                EquivalencyInformationCache.getInstance(w.getDimension().getType()).set(analyzer.calculate());
+            })).toArray(CompletableFuture[]::new)
         );
     }
 }

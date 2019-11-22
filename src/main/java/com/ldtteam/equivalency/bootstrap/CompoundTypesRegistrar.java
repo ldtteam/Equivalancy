@@ -12,14 +12,19 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Mod.EventBusSubscriber(modid = Constants.MOD_ID)
+@Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CompoundTypesRegistrar
 {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
     public static void onRegisterNewRegistry(final RegistryEvent.NewRegistry event)
     {
+        LOGGER.info("Registering the compound type registry with forge.");
         new RegistryBuilder<ICompoundType>()
           .setType(ICompoundType.class)
           .setName(new ResourceLocation(Constants.MOD_ID, "compound_type"))
@@ -30,6 +35,7 @@ public class CompoundTypesRegistrar
     @SubscribeEvent
     public static void BootstrapCompoundTypes(final RegistryEvent.Register<ICompoundType> registerEvent)
     {
+        LOGGER.info("Registering compound types.");
         final IForgeRegistry<ICompoundType> registry = registerEvent.getRegistry();
         
         /*

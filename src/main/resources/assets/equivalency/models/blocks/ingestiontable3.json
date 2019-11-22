@@ -1,12 +1,12 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "BlockbenchSaves:jar",
-		"1": "blocks/planks_big_oak",
-		"2": "blocks/log_big_oak",
-		"3": "BlockbenchSaves:DarkerIron",
-		"4": "BlockbenchSaves:Carpet",
-		"particle": "BlockbenchSaves:jar"
+		"0": "equivalency:blocks/jar",
+		"1": "block/dark_oak_planks",
+		"2": "block/dark_oak_log",
+		"3": "equivalency:blocks/DarkerIron",
+		"4": "equivalency:blocks/carpet",
+		"particle": "equivalency:blocks/jar"
 	},
 	"elements": [
 		{
@@ -1155,100 +1155,115 @@
 	],
 	"display": {
 		"thirdperson_righthand": {
-			"scale": [0.5, 0.5, 0.5],
 			"rotation": [25, 34, 0],
-			"translation": [0.5, 3, 1]
+			"translation": [0.5, 3, 1],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"thirdperson_lefthand": {
-			"scale": [0.5, 0.5, 0.5],
 			"rotation": [25, 34, 0],
-			"translation": [-0.5, 3, 1]
+			"translation": [-0.5, 3, 1],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"firstperson_righthand": {
-			"scale": [0.8, 0.8, 0.8],
 			"rotation": [-10, 8, -9.5],
-			"translation": [7, 0, -8.5]
+			"translation": [7, 0, -8.5],
+			"scale": [0.8, 0.8, 0.8]
 		},
 		"firstperson_lefthand": {
-			"scale": [0.8, 0.8, 0.8],
 			"rotation": [-10, 8, -9.5],
-			"translation": [7, 0, -8]
-		},
-		"head": {
-			"scale": [1.5, 1.5, 1.5],
-			"translation": [0, 13.5, 0]
+			"translation": [7, 0, -8],
+			"scale": [0.8, 0.8, 0.8]
 		},
 		"ground": {
-			"scale": [0.5, 0.5, 0.5],
 			"rotation": [18, 0, 0],
-			"translation": [0, 0.5, 0]
+			"translation": [0, 0.5, 0],
+			"scale": [0.5, 0.5, 0.5]
 		},
 		"gui": {
-			"scale": [0.8, 0.8, 0.8],
 			"rotation": [10, 16.5, -24],
-			"translation": [-1, -0.5, 0]
+			"translation": [-1, -0.5, 0],
+			"scale": [0.8, 0.8, 0.8]
+		},
+		"head": {
+			"translation": [0, 13.5, 0],
+			"scale": [1.5, 1.5, 1.5]
 		}
 	},
 	"groups": [
 		{
 			"name": "Ashtray",
+			"origin": [8, 8, 8],
 			"children": [0,
 				{
 					"name": "Border",
+					"origin": [8, 8, 8],
 					"children": [1, 2, 3, 4]
 				}
 			]
 		},
 		{
 			"name": "Jars",
+			"origin": [8, 8, 8],
 			"children": [
 				{
 					"name": "JarBig",
+					"origin": [8, 8, 8],
 					"children": [
 						{
 							"name": "Top",
+							"origin": [8, 8, 8],
 							"children": [5, 6, 7, 8, 9, 10]
 						},
 						{
 							"name": "Middle",
+							"origin": [8, 8, 8],
 							"children": [11, 12, 13, 14, 15, 16, 17, 18]
 						},
 						{
 							"name": "Bottom",
+							"origin": [8, 8, 8],
 							"children": [19, 20, 21, 22, 23]
 						}
 					]
 				},
 				{
 					"name": "JarSmallRight",
+					"origin": [8, 8, 8],
 					"children": [
 						{
 							"name": "Top",
+							"origin": [8, 8, 8],
 							"children": [24, 25, 26, 27, 28, 29]
 						},
 						{
 							"name": "Middle",
+							"origin": [8, 8, 8],
 							"children": [30, 31, 32, 33, 34, 35, 36, 37]
 						},
 						{
 							"name": "Bottom",
+							"origin": [8, 8, 8],
 							"children": [38, 39, 40, 41, 42]
 						}
 					]
 				},
 				{
 					"name": "JarSmallLeft",
+					"origin": [8, 8, 8],
 					"children": [
 						{
 							"name": "Top",
+							"origin": [8, 8, 8],
 							"children": [43, 44, 45, 46, 47, 48]
 						},
 						{
 							"name": "Middle",
+							"origin": [8, 8, 8],
 							"children": [49, 50, 51, 52, 53, 54, 55, 56]
 						},
 						{
 							"name": "Bottom",
+							"origin": [8, 8, 8],
 							"children": [57, 58, 59, 60, 61]
 						}
 					]
@@ -1257,22 +1272,27 @@
 		},
 		{
 			"name": "IngestionTable",
+			"origin": [8, 8, 8],
 			"children": [
 				{
 					"name": "Baseplate",
+					"origin": [8, 8, 8],
 					"children": [62, 63, 64, 65, 66,
 						{
 							"name": "Legs",
+							"origin": [8, 8, 8],
 							"children": [67, 68, 69, 70]
 						}
 					]
 				},
 				{
 					"name": "Stabilizers",
+					"origin": [8, 8, 8],
 					"children": [71, 72, 73, 74, 75, 76]
 				},
 				{
 					"name": "Top",
+					"origin": [8, 8, 8],
 					"children": [77, 78, 79, 80, 81, 82]
 				}
 			]

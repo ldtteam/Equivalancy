@@ -1,28 +1,32 @@
 package com.ldtteam.equivalency.bootstrap;
 
-import com.ldtteam.equivalency.api.client.drawable.implementations.TextureDrawable;
-import com.ldtteam.equivalency.api.compound.ICompoundType;
+import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
+import com.ldtteam.equivalency.api.util.BlockUtils;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
-import com.ldtteam.equivalency.api.util.ModCompoundNames;
-import com.ldtteam.equivalency.api.util.ModTextures;
 import com.ldtteam.equivalency.compound.container.blockstate.BlockContainer;
 import com.ldtteam.equivalency.compound.container.heat.HeatContainer;
 import com.ldtteam.equivalency.compound.container.itemstack.ItemStackContainer;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
-import com.ldtteam.equivalency.compound.simple.builder.SimpleCompoundTypeBuilder;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameterSets;
+import net.minecraft.world.storage.loot.LootParameters;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CommonBootstrapper
 {
@@ -35,6 +39,7 @@ public class CommonBootstrapper
         BootstrapSerializerFactories();
         BootstrapEquivalencyHandler();
         BootstrapTagNames();
+        BootstrapLootTableAnalyzers();
     }
 
     private static void BootstrapWrapperFactories()
@@ -244,5 +249,25 @@ public class CommonBootstrapper
             Block.class,
             (left, right) -> Optional.of(left.getContents().getRegistryName().toString().equals(right.getContents().getRegistryName().toString()))
           );
+    }
+
+    private static void BootstrapLootTableAnalyzers()
+    {
+        LOGGER.info("Registering loot table analyzers");
+        LootTableAnalyserRegistry.getInstance().register(
+          Block.class,
+          (ICompoundContainer<? extends Block> blockWrapper, ServerWorld world) -> {
+              final ItemStack harvester = BlockUtils.getHarvestingToolForBlock(blockWrapper.getContents());
+              final LootContext.Builder lootcontext$builder = (new LootContext.Builder(world)).withParameter(LootParameters.POSITION, BlockPos.ZERO)
+                                                                .withParameter(LootParameters.TOOL, harvester)
+                                                                .withParameter(LootParameters.BLOCK_STATE, blockWrapper.getContents().getDefaultState());
+              final LootTable table = ServerLifecycleHooks.getCurrentServer().getLootTableManager().getLootTableFromLocation(blockWrapper.getContents().getLootTable());
+              return table.generate(lootcontext$builder.build(LootParameterSets.BLOCK))
+                       .stream()
+                       .map(itemStack -> CompoundContainerFactoryRegistry.getInstance().wrapInContainer(itemStack, 1))
+                       .collect(
+                         Collectors.toSet());
+          }
+        );
     }
 }

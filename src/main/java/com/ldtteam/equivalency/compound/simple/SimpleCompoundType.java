@@ -52,4 +52,27 @@ public class SimpleCompoundType extends ForgeRegistryEntry<ICompoundType> implem
     {
         return Objects.requireNonNull(getRegistryName()).toString().compareTo(Objects.requireNonNull(o.getRegistryName()).toString());
     }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.requireNonNull(getRegistryName()).hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (!(obj instanceof ICompoundType))
+            return false;
+
+        final ICompoundType other = (ICompoundType) obj;
+
+        return Objects.equals(getRegistryName(), other.getRegistryName());
+    }
+
+    @Override
+    public String toString()
+    {
+        return Objects.requireNonNull(getRegistryName()).toString();
+    }
 }

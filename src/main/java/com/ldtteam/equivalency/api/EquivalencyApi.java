@@ -17,6 +17,8 @@ import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSeri
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.gameobject.loottable.ILootTableAnalyserRegistry;
+import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
@@ -53,6 +55,12 @@ public class EquivalencyApi implements IEquivalencyAPI
     public IGameObjectEquivalencyHandlerRegistry getGameObjectEquivalencyHandlerRegistry()
     {
         return GameObjectEquivalencyHandlerRegistry.getInstance();
+    }
+
+    @Override
+    public ILootTableAnalyserRegistry getLootTableAnalyserRegistry()
+    {
+        return LootTableAnalyserRegistry.getInstance();
     }
 
     @Override
