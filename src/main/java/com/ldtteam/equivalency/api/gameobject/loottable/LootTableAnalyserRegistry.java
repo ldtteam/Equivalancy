@@ -1,4 +1,4 @@
-package com.ldtteam.equivalency.gameobject.loottable;
+package com.ldtteam.equivalency.api.gameobject.loottable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class LootTableAnalyserRegistry implements ILootTableAnalyserRegistry
 {

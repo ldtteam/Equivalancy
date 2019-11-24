@@ -1,7 +1,6 @@
 package com.ldtteam.equivalency.api;
 
 import com.ldtteam.equivalency.analyzer.EquivalencyRecipeRegistry;
-import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerFactoryRegistry;
@@ -10,20 +9,16 @@ import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
-import com.ldtteam.equivalency.api.util.Constants;
 import com.ldtteam.equivalency.compound.information.LockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
-import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
-import com.ldtteam.equivalency.gameobject.loottable.ILootTableAnalyserRegistry;
-import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
+import com.ldtteam.equivalency.api.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
+import com.ldtteam.equivalency.api.gameobject.loottable.LootTableAnalyserRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.registries.RegistryBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public class EquivalencyApi implements IEquivalencyAPI

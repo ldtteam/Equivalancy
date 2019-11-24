@@ -1,0 +1,144 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "equivalency:items/tnt/side",
+		"1": "equivalency:items/tnt/top-bottom",
+		"2": "equivalency:items/tnt/lead",
+		"3": "equivalency:items/tnt/iron_sheet",
+		"particle": "equivalency:items/tnt/side"
+	},
+	"elements": [
+		{
+			"name": "TNT-Stick",
+			"from": [3, 2, 0],
+			"to": [5, 12, 2],
+			"rotation": {"angle": -45, "axis": "z", "origin": [5, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 0, 4, 16], "texture": "#3"},
+				"east": {"uv": [0, 0, 4, 16], "texture": "#3"},
+				"south": {"uv": [0, 0, 4, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 4, 16], "texture": "#3"},
+				"up": {"uv": [0, 0, 8, 8], "rotation": 270, "texture": "#1"},
+				"down": {"uv": [0, 0, 8, 8], "rotation": 90, "texture": "#1"}
+			}
+		},
+		{
+			"name": "Part-1",
+			"from": [3.5, 12, 0.5],
+			"to": [4.5, 13, 2.5],
+			"rotation": {"angle": -45, "axis": "z", "origin": [5, 2, 2]},
+			"faces": {
+				"north": {"uv": [3, 0, 6, 3], "texture": "#2"},
+				"east": {"uv": [0, 3, 10, 7], "texture": "#2"},
+				"south": {"uv": [3, 0, 6, 3], "texture": "#2"},
+				"west": {"uv": [0, 3, 10, 7], "texture": "#2"},
+				"up": {"uv": [0, 3, 10, 7], "rotation": 270, "texture": "#2"},
+				"down": {"uv": [0, 3, 10, 7], "rotation": 90, "texture": "#2"}
+			}
+		},
+		{
+			"name": "Part-2",
+			"from": [3.5, 10, 2],
+			"to": [4.5, 12, 3],
+			"rotation": {"angle": -45, "axis": "z", "origin": [5, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 3, 3, 7], "texture": "#2"},
+				"east": {"uv": [0, 3, 3, 7], "texture": "#2"},
+				"south": {"uv": [0, 3, 3, 7], "texture": "#2"},
+				"west": {"uv": [0, 3, 3, 7], "texture": "#2"},
+				"up": {"uv": [3, 0, 6, 3], "rotation": 270, "texture": "#2"},
+				"down": {"uv": [3, 0, 6, 3], "rotation": 90, "texture": "#2"}
+			}
+		},
+		{
+			"name": "Part-3",
+			"from": [4, 9, 2],
+			"to": [6, 10, 3],
+			"rotation": {"angle": -45, "axis": "z", "origin": [5, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 3, 4, 5], "texture": "#2"},
+				"east": {"uv": [3, 0, 6, 3], "texture": "#2"},
+				"south": {"uv": [0, 3, 4, 5], "texture": "#2"},
+				"west": {"uv": [3, 0, 6, 3], "texture": "#2"},
+				"up": {"uv": [0, 3, 10, 7], "rotation": 270, "texture": "#2"},
+				"down": {"uv": [0, 3, 10, 7], "rotation": 90, "texture": "#2"}
+			}
+		},
+		{
+			"name": "Part-4",
+			"from": [5.5, 10, 2],
+			"to": [6.5, 11, 3],
+			"rotation": {"angle": -45, "axis": "z", "origin": [5, 2, 2]},
+			"faces": {
+				"north": {"uv": [0, 3, 2, 5], "texture": "#2"},
+				"east": {"uv": [0, 3, 2, 5], "texture": "#2"},
+				"south": {"uv": [0, 3, 2, 5], "texture": "#2"},
+				"west": {"uv": [0, 3, 2, 5], "texture": "#2"},
+				"up": {"uv": [3, 0, 6, 3], "rotation": 270, "texture": "#2"},
+				"down": {"uv": [3, 0, 6, 3], "rotation": 90, "texture": "#2"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, -45, 45],
+			"translation": [-5.75, 5, 6.5]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -45, 45],
+			"translation": [-5.75, 5, 6.5],
+			"scale": [-1, 1, 1]
+		},
+		"firstperson_righthand": {
+			"rotation": [-95, -76, 4],
+			"translation": [-6.5, 5.75, 4],
+			"scale": [0.5, 0.5, 0.5]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-95, -76, 4],
+			"translation": [-6.5, 5.75, 4],
+			"scale": [-0.5, 0.5, 0.5]
+		},
+		"ground": {
+			"rotation": [-90, 0, 0],
+			"translation": [0, 4.25, 0]
+		},
+		"gui": {
+			"rotation": [-15, -18, 0],
+			"translation": [-2.75, 4.25, 0],
+			"scale": [1.5, 1.5, 1.5]
+		},
+		"head": {
+			"rotation": [0, -180, 45],
+			"translation": [1, 13, -7]
+		},
+		"fixed": {
+			"translation": [0, 2.5, -12],
+			"scale": [1.5, 1.5, -1.5]
+		}
+	},
+	"groups": [
+		{
+			"name": "tnt-stick",
+			"origin": [8, 8, 8],
+			"children": [
+				{
+					"name": "Model",
+					"origin": [8, 8, 8],
+					"children": [
+						{
+							"name": "Stick",
+							"origin": [8, 8, 8],
+							"children": [0]
+						},
+						{
+							"name": "Wire",
+							"origin": [8, 8, 8],
+							"children": [1, 2, 3, 4]
+						}
+					]
+				}
+			]
+		}
+	]
+}

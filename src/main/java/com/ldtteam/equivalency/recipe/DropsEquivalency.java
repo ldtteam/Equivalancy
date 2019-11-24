@@ -3,7 +3,7 @@ package com.ldtteam.equivalency.recipe;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
-import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
+import com.ldtteam.equivalency.api.gameobject.loottable.LootTableAnalyserRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.server.ServerWorld;
 

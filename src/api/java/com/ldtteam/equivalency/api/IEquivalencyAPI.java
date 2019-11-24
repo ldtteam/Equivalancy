@@ -8,7 +8,7 @@ import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
-import com.ldtteam.equivalency.gameobject.loottable.ILootTableAnalyserRegistry;
+import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
 import net.minecraft.world.dimension.DimensionType;
 import org.jetbrains.annotations.NotNull;
 

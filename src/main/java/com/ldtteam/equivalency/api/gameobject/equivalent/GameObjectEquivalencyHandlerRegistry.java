@@ -1,13 +1,11 @@
-package com.ldtteam.equivalency.gameobject.equivalent;
+package com.ldtteam.equivalency.api.gameobject.equivalent;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.util.TypeUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;

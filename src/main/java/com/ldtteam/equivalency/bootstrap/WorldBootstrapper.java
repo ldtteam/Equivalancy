@@ -11,7 +11,7 @@ import com.ldtteam.equivalency.compound.information.LockedCompoundInformationReg
 import com.ldtteam.equivalency.compound.simple.SimpleCompoundInstance;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
-import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.api.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.recipe.DropsEquivalency;
 import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
 import com.ldtteam.equivalency.recipe.SmeltingEquivalancyRecipe;
