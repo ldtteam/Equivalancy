@@ -2,18 +2,19 @@ package com.ldtteam.equivalency.recipe;
 
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 
 import java.util.Set;
 
 public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
 {
-    private final Tag<T>                     tag;
+    private final ITag.INamedTag<T>          tag;
     private final Set<ICompoundContainer<?>> inputs;
     private final Set<ICompoundContainer<?>> outputs;
 
     public TagEquivalencyRecipe(
-      final Tag<T> tag,
+      final ITag.INamedTag<T> tag,
       final Set<ICompoundContainer<?>> inputs,
       final Set<ICompoundContainer<?>> outputs)
     {
@@ -22,7 +23,7 @@ public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
         this.outputs = outputs;
     }
 
-    public Tag<T> getTag()
+    public ITag.INamedTag<T> getTag()
     {
         return tag;
     }
@@ -82,8 +83,8 @@ public class TagEquivalencyRecipe<T> implements IEquivalencyRecipe
     @Override
     public String toString()
     {
-        return "OreDictionaryEquivalencyRecipe{" +
-                 "oreDictionaryName='" + getTag().getId() + '\'' +
+        return "TagEquivalencyRecipe{" +
+                 "tagName='" + getTag().getName() + '\'' +
                  ", inputs=" + inputs +
                  ", outputs=" + outputs +
                  '}';

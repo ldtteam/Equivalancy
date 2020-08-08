@@ -12,12 +12,12 @@ public final class ModBlocks
         throw new IllegalStateException("Tried to initialize: ModBlocks but this is a Utility class.");
     }
 
-    @ObjectHolder("tnt_stick_unshaped")
+    @ObjectHolder(ModBlockNames.Path.Block.UNSHAPED_TNT_STICK)
     public static Block UNSHAPED_TNT_STICK;
 
-    @ObjectHolder("tnt_stick_shaped")
+    @ObjectHolder(ModBlockNames.Path.Block.SHAPED_TNT_STICK)
     public static Block SHAPED_TNT_STICK;
 
-    @ObjectHolder("tnt_stack_unstable")
-    public static Block TNT_STACK_UNSTABLE;
+    @ObjectHolder(ModBlockNames.Path.Block.TNT_STACK_STABLE)
+    public static Block TNT_STACK_STABLE;
 }

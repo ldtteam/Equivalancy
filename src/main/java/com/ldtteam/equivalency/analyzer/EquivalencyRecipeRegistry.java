@@ -4,19 +4,22 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+
 
 import java.util.Map;
 import java.util.Set;
 
 public class EquivalencyRecipeRegistry implements IEquivalencyRecipeRegistry
 {
-    private static final Map<DimensionType, EquivalencyRecipeRegistry> INSTANCES = Maps.newConcurrentMap();
+    private static final Map<RegistryKey<World>, EquivalencyRecipeRegistry> INSTANCES = Maps.newConcurrentMap();
 
-    public static EquivalencyRecipeRegistry getInstance(@NotNull final DimensionType dimensionType)
+    public static EquivalencyRecipeRegistry getInstance(@NotNull final RegistryKey<World> worldKey)
     {
-        return INSTANCES.computeIfAbsent(dimensionType, (dimType) -> new EquivalencyRecipeRegistry());
+        return INSTANCES.computeIfAbsent(worldKey, (dimType) -> new EquivalencyRecipeRegistry());
     }
 
     private final Set<IEquivalencyRecipe> recipes = Sets.newConcurrentHashSet();

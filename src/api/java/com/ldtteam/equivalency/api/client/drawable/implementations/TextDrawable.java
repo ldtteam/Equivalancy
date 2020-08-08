@@ -2,12 +2,12 @@ package com.ldtteam.equivalency.api.client.drawable.implementations;
 
 import com.ldtteam.equivalency.api.client.drawable.ISizedDrawable;
 import com.ldtteam.equivalency.api.client.util.DrawingUtil;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Vector2d;
 
 @OnlyIn(Dist.CLIENT)
 public class TextDrawable implements ISizedDrawable
@@ -28,10 +28,10 @@ public class TextDrawable implements ISizedDrawable
      * @return The requested size on neutral scale.
      */
     @Override
-    public Vector2d getSize()
+    public Vector2f getSize()
     {
-        return new Vector2d(
-          fontRenderer.getStringWidth(string.getFormattedText()),
+        return new Vector2f(
+          fontRenderer.getStringWidth(string.getString()),
           fontRenderer.FONT_HEIGHT
         );
     }
@@ -40,10 +40,10 @@ public class TextDrawable implements ISizedDrawable
      * Draws this object.
      */
     @Override
-    public void draw()
+    public void draw(final MatrixStack stack)
     {
-        DrawingUtil.drawWithAlphaAndBlending(() -> {
-            this.fontRenderer.drawStringWithShadow(string.getFormattedText(), 0,0, 0xffffffff);
+        DrawingUtil.drawWithAlphaAndBlending(stack, () -> {
+            this.fontRenderer.drawStringWithShadow(stack, string.getString(), 0,0, 0xffffffff);
         });
     }
 }

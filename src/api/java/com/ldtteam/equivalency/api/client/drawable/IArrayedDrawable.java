@@ -1,10 +1,9 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Vector2d;
 
 /**
  * An {@link IDrawable} that is made up out of several different {@link ISizedDrawable} instances.
@@ -19,30 +18,29 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * @return The requested size on neutral scale.
      */
     @Override
-    default Vector2d getSize()
+    default Vector2f getSize()
     {
         if (getDrawables().isEmpty())
-            return new Vector2d();
+            return new Vector2f(0,0);
 
         if (getDrawables().size() == 1)
-            //noinspection OptionalGetWithoutIsPresent (Size == 1 ensures that stream entry is present)
-            return getDrawables().stream().findFirst().get().getSize();
+            return getDrawables().iterator().next().getSize();
 
-        double width;
-        double height;
+        float width;
+        float height;
 
         if (getOrientation() == Orientation.HORIZONTAL)
         {
-            width = getDrawables().stream().mapToDouble(d -> d.getSize().getX() + getOffset().getX()).sum() - getOffset().getX();
-            height = getDrawables().stream().mapToDouble(d -> d.getSize().getY()).max().orElse(0);
+            width = (float) (getDrawables().stream().mapToDouble(d -> d.getSize().x + getOffset().x).sum() - getOffset().x);
+            height = (float) getDrawables().stream().mapToDouble(d -> d.getSize().y).max().orElse(0);
         }
         else
         {
-            width = getDrawables().stream().mapToDouble(d -> d.getSize().getX()).max().orElse(0);
-            height = getDrawables().stream().mapToDouble(d -> d.getSize().getY() + getOffset().getY()).sum() - getOffset().getY();
+            width = (float) getDrawables().stream().mapToDouble(d -> d.getSize().x).max().orElse(0);
+            height = (float) (getDrawables().stream().mapToDouble(d -> d.getSize().y + getOffset().y).sum() - getOffset().y);
         }
 
-        return new Vector2d(width, height);
+        return new Vector2f(width, height);
     }
 
     /**
@@ -57,8 +55,8 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * The vertical drawing strategy.
      * 
      * Relevant when drawing in vertical mode.
-     * Can be either triggered via a call to {@link #drawVertical()} or
-     * if a call to {@link #draw()} when {@link #getOrientation()}
+     * Can be either triggered via a call to {@link #drawVertical(MatrixStack)} or
+     * if a call to {@link #draw(MatrixStack)} when {@link #getOrientation()}
      * returns {@link Orientation#VERTICAL} is made.
      * 
      * @return The strategy used during vertical drawing.
@@ -70,8 +68,8 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * The horizontal drawing strategy.
      *
      * Relevant when drawing in horizontal mode.
-     * Can be either triggered via a call to {@link #drawHorizontal()} or
-     * if a call to {@link #draw()} when {@link #getOrientation()}
+     * Can be either triggered via a call to {@link #drawHorizontal(MatrixStack)} or
+     * if a call to {@link #draw(MatrixStack)} when {@link #getOrientation()}
      * returns {@link Orientation#HORIZONTAL} is made.
      *
      * @return The strategy used during horizontal drawing.
@@ -85,81 +83,81 @@ public interface IArrayedDrawable extends ICombiningDrawable
      * @return The offset between drawables.
      */
     @OnlyIn(Dist.CLIENT)
-    Vector2d getOffset();
+    Vector2f getOffset();
 
     /**
      * Draws this object.
      */
     @Override
-    default void draw()
+    default void draw(final MatrixStack stack)
     {
         switch (getOrientation())
         {
             case HORIZONTAL:
-                drawHorizontal();
+                drawHorizontal(stack);
                 break;
             case VERTICAL:
-                drawVertical();
+                drawVertical(stack);
                 break;
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void drawVertical()
+    default void drawVertical(final MatrixStack stack)
     {
-        GlStateManager.pushMatrix();
+        stack.push();
 
         getDrawables().forEach(iSizedDrawable -> {
-            GlStateManager.pushMatrix();
+            stack.push();
 
             switch (getVerticalStrategy())
             {
                 case LEFT:
                     break;
                 case CENTER:
-                    GlStateManager.translated((getSize().getX() - iSizedDrawable.getSize().getX()) / 2, 0f, 0f);
+                    stack.translate((getSize().x - iSizedDrawable.getSize().x) / 2, 0f, 0f);
                     break;
                 case RIGHT:
-                    GlStateManager.translated(getSize().getX() - iSizedDrawable.getSize().getX(), 0f, 0f);
+                    stack.translate(getSize().x - iSizedDrawable.getSize().x, 0f, 0f);
                     break;
             }
 
-            iSizedDrawable.draw();
+            iSizedDrawable.draw(stack);
 
-            GlStateManager.popMatrix();
+            stack.pop();
 
-            GlStateManager.translated(0f, iSizedDrawable.getSize().getY() + getOffset().getY(), 0f);
+            stack.translate(0f, iSizedDrawable.getSize().y + getOffset().y, 0f);
         });
 
-        GlStateManager.popMatrix();
+        stack.pop();
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void drawHorizontal()
+    default void drawHorizontal(final MatrixStack stack)
     {
-        GlStateManager.pushMatrix();
+        stack.push();
 
         getDrawables().forEach(iSizedDrawable -> {
-            GlStateManager.pushMatrix();
+            stack.pop();
 
             switch (getHorizontalStrategy())
             {
                 case TOP:
                     break;
                 case CENTER:
-                    GlStateManager.translated(0f, (getSize().getY() - iSizedDrawable.getSize().getY()) / 2,0f);
+                    stack.translate(0f, (getSize().y - iSizedDrawable.getSize().y) / 2,0f);
                 case BOTTOM:
-                    GlStateManager.translated(0f, getSize().getY() - iSizedDrawable.getSize().getY(), 0f);
+                    stack.translate(0f, getSize().y - iSizedDrawable.getSize().y, 0f);
             }
 
-            iSizedDrawable.draw();
+            iSizedDrawable.draw(stack);
 
-            GlStateManager.popMatrix();
+            stack.pop();
 
-            GlStateManager.translated(iSizedDrawable.getSize().getX() + getOffset().getX(), 0f, 0f);
+            stack.translate(iSizedDrawable.getSize().x + getOffset().x, 0f, 0f);
         });
 
-        GlStateManager.popMatrix();
+        stack.pop();
     }
 
     /**

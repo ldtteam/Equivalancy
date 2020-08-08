@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SP ",
+    "PGP",
+    " PG"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:string"
+    },
+    "P": {
+      "tag": "forge:paper"
+    },
+    "G": {
+      "tag": "forge:gunpowder"
+    }
+  },
+  "result": {
+    "count": 1,
+    "item": "equivalency:tnt_stick_unshaped"
+  }
+}

@@ -1,8 +1,9 @@
-package com.ldtteam.equivalency.api.gameobject.loottable;
+package com.ldtteam.equivalency.gameobject.loottable;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
+import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
 import com.ldtteam.equivalency.api.util.TypeUtils;
 import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;

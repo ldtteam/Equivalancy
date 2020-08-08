@@ -7,6 +7,7 @@ import com.ldtteam.datagenerators.blockstate.BlockstateVariantJson;
 import com.ldtteam.equivalency.api.util.Constants;
 import com.ldtteam.equivalency.api.util.DataGeneratorUtils;
 import com.ldtteam.equivalency.api.util.ModBlocks;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
@@ -28,44 +29,39 @@ public abstract class AbstractTNTStickBlockStateDataGenerator implements IDataPr
     @Override
     public void act(final DirectoryCache cache) throws IOException
     {
-        final Path inputPath = generator.getInputFolders().stream().findFirst().orElse(null);
-
-        if (inputPath == null)
-            return;
-
         createBlockStateFile(cache);
     }
 
     private void createBlockStateFile(final DirectoryCache cache) throws IOException
     {
-        if (ModBlocks.UNSHAPED_TNT_STICK.getRegistryName() == null)
+        if (getBlock() == null)
+            return;
+
+        if (getBlock().getRegistryName() == null)
             return;
 
         final Map<String, BlockstateVariantJson> variants = Maps.newHashMap();
         BlockStateProperties.FACING.getAllowedValues().forEach(direction -> {
-            final String variantKey = "facing=" + direction;
+            BlockStateProperties.UNSTABLE.getAllowedValues().forEach(stable -> {
+                final String variantKey = "facing=" + direction + ",unstable=" + stable;
 
-            String modelFile = new ResourceLocation(Constants.MOD_ID, getModelPath()).toString();
-            int rotateX = DataGeneratorUtils.getXRotationFromFacing(direction);
-            int rotateY = DataGeneratorUtils.getYRotationFromFacing(direction);
+                String modelFile = new ResourceLocation(Constants.MOD_ID, getModelPath()).toString();
+                int rotateX = DataGeneratorUtils.getXRotationFromFacing(direction);
+                int rotateY = DataGeneratorUtils.getYRotationFromFacing(direction);
 
-            final BlockstateModelJson model = new BlockstateModelJson(modelFile, rotateX, rotateY);
-            variants.put(variantKey, new BlockstateVariantJson(model));
+                final BlockstateModelJson model = new BlockstateModelJson(modelFile, rotateX, rotateY);
+                variants.put(variantKey, new BlockstateVariantJson(model));
+            });
         });
 
         final BlockstateJson blockstateJson = new BlockstateJson(variants);
         final Path blockstateFolder = this.generator.getOutputFolder().resolve(Constants.DataGenerator.BLOCKSTATE_DIR);
-        final Path blockstatePath = blockstateFolder.resolve(ModBlocks.UNSHAPED_TNT_STICK.getRegistryName().getPath() + ".json");
+        final Path blockstatePath = blockstateFolder.resolve(getBlock().getRegistryName().getPath() + ".json");
 
-        IDataProvider.func_218426_a(Constants.DataGenerator.GSON, cache, blockstateJson.serialize(), blockstatePath);
+        IDataProvider.save(Constants.DataGenerator.GSON, cache, blockstateJson.serialize(), blockstatePath);
     }
 
-    @NotNull
-    @Override
-    public String getName()
-    {
-        return "Unshaped TNT Stick BlockState generator";
-    }
+    protected abstract Block getBlock();
 
     protected abstract String getModelPath();
 }

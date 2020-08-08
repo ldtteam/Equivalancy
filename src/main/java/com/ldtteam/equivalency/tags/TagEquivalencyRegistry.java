@@ -2,6 +2,7 @@ package com.ldtteam.equivalency.tags;
 
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,20 +17,20 @@ public class TagEquivalencyRegistry implements ITagEquivalencyRegistry
         return INSTANCE;
     }
 
-    private final Set<ResourceLocation> tags = Sets.newConcurrentHashSet();
+    private final Set<ITag.INamedTag<?>> tags = Sets.newConcurrentHashSet();
 
     private TagEquivalencyRegistry()
     {
     }
 
     @Override
-    public ITagEquivalencyRegistry addTag(@NotNull final ResourceLocation tagName)
+    public ITagEquivalencyRegistry addTag(@NotNull final ITag.INamedTag<?> tag)
     {
-        tags.add(tagName);
+        this.tags.add(tag);
         return this;
     }
 
-    public Set<ResourceLocation> get()
+    public Set<ITag.INamedTag<?>> get()
     {
         return tags;
     }

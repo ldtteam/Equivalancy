@@ -15,18 +15,18 @@ public final class TagUtils
         throw new IllegalStateException("Tried to initialize: TagUtils but this is a Utility class.");
     }
 
-    public static List<Tag<?>> get(@NotNull final ResourceLocation name)
+    public static List<ITag.INamedTag<?>> get(@NotNull final ResourceLocation name)
     {
-        final List<Tag<?>> result = Lists.newArrayList();
+        final List<ITag.INamedTag<?>> result = Lists.newArrayList();
 
         if (BlockTags.getCollection().getTagMap().containsKey(name))
-            result.add(BlockTags.getCollection().getTagMap().get(name));
+            result.add(BlockTags.makeWrapperTag(name.toString()));
         if (ItemTags.getCollection().getTagMap().containsKey(name))
-            result.add(ItemTags.getCollection().getTagMap().get(name));
+            result.add(ItemTags.makeWrapperTag(name.toString()));
         if (EntityTypeTags.getCollection().getTagMap().containsKey(name))
-            result.add(EntityTypeTags.getCollection().getTagMap().get(name));
+            result.add(EntityTypeTags.func_232896_a_(name.toString()));
         if (FluidTags.getCollection().getTagMap().containsKey(name))
-            result.add(FluidTags.getCollection().getTagMap().get(name));
+            result.add(FluidTags.makeWrapperTag(name.toString()));
 
         return result;
     }

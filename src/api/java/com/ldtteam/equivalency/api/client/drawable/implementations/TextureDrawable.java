@@ -2,10 +2,10 @@ package com.ldtteam.equivalency.api.client.drawable.implementations;
 
 import com.ldtteam.equivalency.api.client.drawable.I2DDrawable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.vecmath.Vector2d;
 
 /**
  * A Simple 2D texture drawable resource.
@@ -14,13 +14,13 @@ import javax.vecmath.Vector2d;
 public class TextureDrawable implements I2DDrawable
 {
     private final ResourceLocation icon;
-    private final Vector2d size;
+    private final Vector2f         size;
 
     public TextureDrawable(final ResourceLocation icon) {
-        this(icon, new Vector2d(16, 16));
+        this(icon, new Vector2f(16, 16));
     }
 
-    public TextureDrawable(final ResourceLocation icon, final Vector2d size) {
+    public TextureDrawable(final ResourceLocation icon, final Vector2f size) {
         this.icon = icon;
         this.size = size;
     }
@@ -44,7 +44,7 @@ public class TextureDrawable implements I2DDrawable
      */
     @OnlyIn(Dist.CLIENT)
     @Override
-    public Vector2d getSize()
+    public Vector2f getSize()
     {
         return size;
     }

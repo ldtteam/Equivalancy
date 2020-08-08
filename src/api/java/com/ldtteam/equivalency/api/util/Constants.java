@@ -18,11 +18,12 @@ public final class Constants
     public static class DataGenerator {
 
         public static final  Gson   GSON                           = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        public static final  String EN_US_LANG                     = "assets/structurize/lang/en_us.json";
-        public static final  String ITEM_MODEL_DIR                 = "assets/structurize/models/item/";
+        public static final  String EN_US_LANG                     = "assets/" + Constants.MOD_ID + "/lang/en_us.json";
+        public static final  String ITEM_MODEL_DIR                 = "assets/" + Constants.MOD_ID + "/models/item/";
         private static final String DATAPACK_DIR                   = "data/" + MOD_ID + "/";
-        public static final  String RECIPES_DIR                    = DATAPACK_DIR + "/recipes/";
+        public static final  String RECIPES_DIR                    = DATAPACK_DIR + "recipes/";
         public static final  String TAGS_DIR                       = DATAPACK_DIR + "tags/";
+        public static final  String FORGE_TAGS_DIR                 = "data/forge/" + "tags/";
         public static final  String LOOT_TABLES_DIR                = DATAPACK_DIR + "loot_tables/blocks";
         private static final String RESOURCEPACK_DIR               = "assets/" + MOD_ID + "/";
         public static final  String BLOCKSTATE_DIR                 = RESOURCEPACK_DIR + "blockstates/";

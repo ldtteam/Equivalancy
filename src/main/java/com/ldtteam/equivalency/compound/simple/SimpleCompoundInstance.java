@@ -53,7 +53,7 @@ public class SimpleCompoundInstance implements ICompoundInstance
     @Override
     public ITextComponent getTranslation()
     {
-        return new StringTextComponent(String.format("%s ", getAmount())).appendSibling(getType().getTranslation());
+        return new StringTextComponent(String.format("%s ", getAmount())).append(getType().getTranslation());
     }
 
     /**

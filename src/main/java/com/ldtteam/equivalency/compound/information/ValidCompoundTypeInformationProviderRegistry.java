@@ -7,7 +7,8 @@ import com.ldtteam.equivalency.api.compound.ICompoundType;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProvider;
 import com.ldtteam.equivalency.api.compound.container.information.IValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,19 +17,19 @@ import java.util.function.BiFunction;
 public class ValidCompoundTypeInformationProviderRegistry implements IValidCompoundTypeInformationProviderRegistry
 {
 
-    private static final Map<DimensionType, ValidCompoundTypeInformationProviderRegistry> INSTANCES = Maps.newConcurrentMap();
+    private static final Map<RegistryKey<World>, ValidCompoundTypeInformationProviderRegistry> INSTANCES = Maps.newConcurrentMap();
 
-    public static ValidCompoundTypeInformationProviderRegistry getInstance(@NotNull final DimensionType dimensionType)
+    public static ValidCompoundTypeInformationProviderRegistry getInstance(@NotNull final RegistryKey<World> worldKey)
     {
-        return INSTANCES.computeIfAbsent(dimensionType, ValidCompoundTypeInformationProviderRegistry::new);
+        return INSTANCES.computeIfAbsent(worldKey, ValidCompoundTypeInformationProviderRegistry::new);
     }
 
     private final Map<Class<?>, Set<IValidCompoundTypeInformationProvider<?>>> providers = Maps.newConcurrentMap();
-    private final DimensionType                                                dimType;
+    private final RegistryKey<World>                                           worldKey;
 
-    private ValidCompoundTypeInformationProviderRegistry(final DimensionType dimType)
+    private ValidCompoundTypeInformationProviderRegistry(final RegistryKey<World> worldKey)
     {
-        this.dimType = dimType;
+        this.worldKey = worldKey;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ValidCompoundTypeInformationProviderRegistry implements IValidCompo
       @NotNull final ICompoundType type
     )
     {
-        final Set<ICompoundInstance> lockedInformation = LockedCompoundInformationRegistry.getInstance(dimType).get().get(wrapper);
+        final Set<ICompoundInstance> lockedInformation = LockedCompoundInformationRegistry.getInstance(worldKey).get().get(wrapper);
         if (lockedInformation != null)
         {
             return lockedInformation.stream().anyMatch(compoundInstance -> compoundInstance.getType().equals(type));

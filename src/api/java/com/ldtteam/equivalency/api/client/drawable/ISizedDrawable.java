@@ -1,9 +1,8 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Vector2d;
 
 /**
  * Represents drawable with a given size.
@@ -16,5 +15,5 @@ public interface ISizedDrawable extends IDrawable
      * @return The requested size on neutral scale.
      */
     @OnlyIn(Dist.CLIENT)
-    Vector2d getSize();
+    Vector2f getSize();
 }

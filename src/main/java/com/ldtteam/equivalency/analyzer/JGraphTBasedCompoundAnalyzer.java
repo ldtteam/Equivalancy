@@ -39,7 +39,7 @@ public class JGraphTBasedCompoundAnalyzer
 
         final Map<ICompoundContainer<?>, IAnalysisGraphNode> nodes = Maps.newConcurrentMap();
 
-        EquivalencyRecipeRegistry.getInstance(world.getDimension().getType())
+        EquivalencyRecipeRegistry.getInstance(world.func_234923_W_())
           .get()
           .forEach(recipe -> {
               final IAnalysisGraphNode recipeGraphNode = new RecipeGraphNode(recipe);
@@ -75,9 +75,22 @@ public class JGraphTBasedCompoundAnalyzer
               });
           });
 
-        LockedCompoundInformationRegistry.getInstance(world.getDimension().getType()).get().keySet().forEach(lockedWrapper -> {
-            final Set<DefaultWeightedEdge> incomingEdgesToRemove = new HashSet<>(recipeGraph.incomingEdgesOf(new ContainerWrapperGraphNode(lockedWrapper)));
-            recipeGraph.removeAllEdges(incomingEdgesToRemove);
+        LockedCompoundInformationRegistry.getInstance(world.func_234923_W_()).get().keySet().forEach(lockedWrapper -> {
+            if (!recipeGraph.containsVertex(new ContainerWrapperGraphNode(lockedWrapper)))
+            {
+                nodes.putIfAbsent(lockedWrapper, new ContainerWrapperGraphNode(lockedWrapper));
+
+                final IAnalysisGraphNode inputWrapperGraphNode = nodes.get(lockedWrapper);
+
+                resultingCompounds.putIfAbsent(lockedWrapper, new TreeSet<>());
+                recipeGraph.addVertex(inputWrapperGraphNode);
+            }
+            else
+            {
+                final Set<DefaultWeightedEdge> incomingEdgesToRemove = new HashSet<>(recipeGraph.incomingEdgesOf(new ContainerWrapperGraphNode(lockedWrapper)));
+                recipeGraph.removeAllEdges(incomingEdgesToRemove);
+            }
+
         });
 
         final Set<ContainerWrapperGraphNode> rootNodes = findRootNodes(recipeGraph);
@@ -280,10 +293,10 @@ public class JGraphTBasedCompoundAnalyzer
                         .addAll(
                           summedCompoundInstances
                             .stream()
-                            .filter(compoundInstance -> ValidCompoundTypeInformationProviderRegistry.getInstance(world.getDimension().getType()).isCompoundTypeValidForWrapper(neighbor.getWrapper(), compoundInstance.getType()))
+                            .filter(compoundInstance -> ValidCompoundTypeInformationProviderRegistry.getInstance(world.func_234923_W_()).isCompoundTypeValidForWrapper(neighbor.getWrapper(), compoundInstance.getType()))
                             .map(compoundInstance -> new SimpleCompoundInstance(compoundInstance.getType(), Math.floor(compoundInstance.getAmount() / recipeGraph.getEdgeWeight(recipeGraph.getEdge(node, neighbor)))))
                             .filter(simpleCompoundInstance -> simpleCompoundInstance.getAmount() > 0)
-                            .filter(simpleCompoundInstance -> ValidCompoundTypeInformationProviderRegistry.getInstance(world.getDimension().getType()).isCompoundTypeValidForWrapper(neighbor.getWrapper(), simpleCompoundInstance.getType()))
+                            .filter(simpleCompoundInstance -> ValidCompoundTypeInformationProviderRegistry.getInstance(world.func_234923_W_()).isCompoundTypeValidForWrapper(neighbor.getWrapper(), simpleCompoundInstance.getType()))
                             .collect(Collectors.toSet())
                         );
                   }
@@ -332,7 +345,7 @@ public class JGraphTBasedCompoundAnalyzer
 
     private Set<ICompoundInstance> getLockedInformationInstances(@NotNull final ICompoundContainer<?> wrapper)
     {
-        final Set<ICompoundInstance> lockedInstances = LockedCompoundInformationRegistry.getInstance(world.getDimension().getType())
+        final Set<ICompoundInstance> lockedInstances = LockedCompoundInformationRegistry.getInstance(world.func_234923_W_())
                                                          .get()
                                                          .get(createUnitWrapper(wrapper));
 

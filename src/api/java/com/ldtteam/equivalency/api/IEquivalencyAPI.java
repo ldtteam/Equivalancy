@@ -9,7 +9,9 @@ import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyH
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
 import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -54,27 +56,27 @@ public interface IEquivalencyAPI
     ITagEquivalencyRegistry getTagEquivalencyRegistry();
 
     /**
-     * Gives access to the registry that holds the recipe information for a given dimension.
-     * @param dimensionType The dimension type to get the equivalency recipe information for.
-     * @return The recipe registry for a given dimension.
+     * Gives access to the registry that holds the recipe information for a given world.
+     * @param worldKey The world key to get the equivalency recipe information for.
+     * @return The recipe registry for a given world.
      */
-    IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final DimensionType dimensionType);
+    IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final RegistryKey<World> worldKey);
 
     /**
-     * Gives access to the registry that contains the locking information for game objects and wrappers in a given dimension.
+     * Gives access to the registry that contains the locking information for game objects and wrappers in a given world.
      *
-     * @param dimensionType The dimension type that represents the world for which locking information registry is being retrieved.
+     * @param worldKey The world key that represents the world for which locking information registry is being retrieved.
      * @return The registry for locking type information for a given world.
      */
-    ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final DimensionType dimensionType);
+    ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final RegistryKey<World> worldKey);
 
     /**
-     * Gives access to the registry that contains the information providers that handle the compound validation logic during analysis for a given dimension.
+     * Gives access to the registry that contains the information providers that handle the compound validation logic during analysis for a given world.
      *
-     * @param dimensionType The dimension type.
-     * @return The registry containing information providers that handle the compound validation logic for a given dimension.
+     * @param worldKey The world key.
+     * @return The registry containing information providers that handle the compound validation logic for a given world.
      */
-    IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final DimensionType dimensionType);
+    IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final RegistryKey<World> worldKey);
 
     /**
      * Gives access to the cache that contains the equivalency information after calculation.

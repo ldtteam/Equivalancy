@@ -42,3 +42,5 @@ tools/export_lang/.api_key
 tools/fix_model_angle/*.class
 
 run2/
+
+src/generated/

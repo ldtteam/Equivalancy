@@ -1,5 +1,6 @@
 package com.ldtteam.equivalency.api.client.drawable;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -14,5 +15,5 @@ public interface IDrawable
      * Draws this object.
      */
     @OnlyIn(Dist.CLIENT)
-    void draw();
+    void draw(final MatrixStack stack);
 }

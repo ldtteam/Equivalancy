@@ -38,6 +38,7 @@ sourceSets {
         }
         compileClasspath += configurations.getByName("minecraft")
     }
+    //noinspection GroovyAssignabilityCheck
     main {
         java {
             srcDir 'src/main/java'
@@ -76,10 +77,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
 
             mods {
                 equivalency {
@@ -93,10 +94,10 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
 
             mods {
                 equivalency {
@@ -110,12 +111,12 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', ''
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
+            property 'forge.logging.console.level', 'info'
 
-            args '--mod', 'equivalency', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'equivalency', '--all', '--output', file('src/generated/resources/'), '--input', file('src/main/resources')
 
             mods {
                 equivalency {
@@ -156,6 +157,6 @@ dependencies {
     apiCompile 'com.intellij:annotations:+@jar'
     compile 'com.intellij:annotations:+@jar'
     testCompile 'com.intellij:annotations:+@jar'
-    compile 'org.jgrapht:jgrapht-core:+'
-    compile 'org.jgrapht:jgrapht-ext:+'
+    compile "org.jgrapht:jgrapht-core:${project.jgraphtVersion}"
+    compile "org.jgrapht:jgrapht-ext:${project.jgraphtVersion}"
 }

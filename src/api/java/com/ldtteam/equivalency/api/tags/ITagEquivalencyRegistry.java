@@ -1,7 +1,9 @@
 package com.ldtteam.equivalency.api.tags;
 
-import net.minecraft.tags.Tag;
+import com.ldtteam.equivalency.api.util.TagUtils;
+import net.minecraft.tags.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,10 +19,7 @@ public interface ITagEquivalencyRegistry
      * @param tag The tag that indicates that a given set of game objects contained in the tag are equal to one another.
      * @return The registry with the tag added for analysis.
      */
-    default ITagEquivalencyRegistry addTag(@NotNull final Tag<?> tag)
-    {
-        return addTag(Validate.notNull(tag).getId());
-    }
+    ITagEquivalencyRegistry addTag(@NotNull final ITag.INamedTag<?> tag);
 
     /**
      * Adds a given tag to the registry, via its name.
@@ -29,5 +28,8 @@ public interface ITagEquivalencyRegistry
      * @param tagName The name of the tag that indicates that a given set of game objects contained in the tag are equal to one another.
      * @return The registry with the tag added for analysis.
      */
-    ITagEquivalencyRegistry addTag(@NotNull final ResourceLocation tagName);
+    default ITagEquivalencyRegistry addTag(@NotNull final ResourceLocation tagName) {
+        TagUtils.get(tagName).forEach(this::addTag);
+        return this;
+    }
 }

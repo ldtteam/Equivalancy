@@ -7,7 +7,9 @@ import com.ldtteam.equivalency.api.compound.ICompoundInstance;
 import com.ldtteam.equivalency.api.compound.ILockedCompoundInformationRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -15,11 +17,11 @@ import java.util.Set;
 
 public class LockedCompoundInformationRegistry implements ILockedCompoundInformationRegistry
 {
-    private static final Map<DimensionType, LockedCompoundInformationRegistry> INSTANCES = Maps.newConcurrentMap();
+    private static final Map<RegistryKey<World>, LockedCompoundInformationRegistry> INSTANCES = Maps.newConcurrentMap();
 
-    public static LockedCompoundInformationRegistry getInstance(@NotNull final DimensionType dimensionType)
+    public static LockedCompoundInformationRegistry getInstance(@NotNull final RegistryKey<World> worldKey)
     {
-        return INSTANCES.computeIfAbsent(dimensionType, (dimType) -> new LockedCompoundInformationRegistry());
+        return INSTANCES.computeIfAbsent(worldKey, (dimType) -> new LockedCompoundInformationRegistry());
     }
 
     private LockedCompoundInformationRegistry()

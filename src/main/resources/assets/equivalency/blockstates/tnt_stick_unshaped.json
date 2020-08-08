@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=south,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped",
+      "y": 180
+    },
+    "facing=west,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 270,
+      "y": 270
+    },
+    "facing=up,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90
+    },
+    "facing=south,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped",
+      "y": 180
+    },
+    "facing=down,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90,
+      "y": 180
+    },
+    "facing=west,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 270,
+      "y": 270
+    },
+    "facing=east,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped"
+    },
+    "facing=north,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped"
+    },
+    "facing=down,unstable=true": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90,
+      "y": 90
+    },
+    "facing=up,unstable=false": {
+      "model": "equivalency:block/tnt/unshaped",
+      "x": 90
+    }
+  }
+}

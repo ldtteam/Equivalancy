@@ -16,6 +16,6 @@ public class FMLInitHandler
     public static void setup(final FMLCommonSetupEvent event)
     {
         LOGGER.info("Setting up Equivalencies static data.");
-        CommonBootstrapper.Bootstrap();
+        CommonBootstrapper.doBootstrap();
     }
 }

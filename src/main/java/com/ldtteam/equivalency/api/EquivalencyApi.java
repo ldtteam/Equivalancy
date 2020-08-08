@@ -14,11 +14,13 @@ import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFact
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.equivalency.EquivalencyInformationCache;
-import com.ldtteam.equivalency.api.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
+import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
 import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
-import com.ldtteam.equivalency.api.gameobject.loottable.LootTableAnalyserRegistry;
+import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 public class EquivalencyApi implements IEquivalencyAPI
@@ -65,21 +67,21 @@ public class EquivalencyApi implements IEquivalencyAPI
     }
 
     @Override
-    public IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final DimensionType dimensionType)
+    public IEquivalencyRecipeRegistry getEquivalencyRecipeRegistry(@NotNull final RegistryKey<World> worldKey)
     {
-        return EquivalencyRecipeRegistry.getInstance(dimensionType);
+        return EquivalencyRecipeRegistry.getInstance(worldKey);
     }
 
     @Override
-    public ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final DimensionType dimensionType)
+    public ILockedCompoundInformationRegistry getLockedCompoundWrapperToTypeRegistry(@NotNull final RegistryKey<World> worldKey)
     {
-        return LockedCompoundInformationRegistry.getInstance(dimensionType);
+        return LockedCompoundInformationRegistry.getInstance(worldKey);
     }
 
     @Override
-    public IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final DimensionType dimensionType)
+    public IValidCompoundTypeInformationProviderRegistry getValidCompoundTypeInformationProviderRegistry(@NotNull final RegistryKey<World> worldKey)
     {
-        return ValidCompoundTypeInformationProviderRegistry.getInstance(dimensionType);
+        return ValidCompoundTypeInformationProviderRegistry.getInstance(worldKey);
     }
 
     @Override

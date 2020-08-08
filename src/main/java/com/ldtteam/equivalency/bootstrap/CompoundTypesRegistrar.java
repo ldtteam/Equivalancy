@@ -33,7 +33,7 @@ public class CompoundTypesRegistrar
     }
 
     @SubscribeEvent
-    public static void BootstrapCompoundTypes(final RegistryEvent.Register<ICompoundType> registerEvent)
+    public static void doBootstrapCompoundTypes(final RegistryEvent.Register<ICompoundType> registerEvent)
     {
         LOGGER.info("Registering compound types.");
         final IForgeRegistry<ICompoundType> registry = registerEvent.getRegistry();

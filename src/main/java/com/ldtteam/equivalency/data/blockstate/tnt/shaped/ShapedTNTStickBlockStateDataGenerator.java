@@ -1,7 +1,9 @@
 package com.ldtteam.equivalency.data.blockstate.tnt.shaped;
 
 import com.ldtteam.equivalency.api.util.Constants;
+import com.ldtteam.equivalency.api.util.ModBlocks;
 import com.ldtteam.equivalency.data.blockstate.tnt.AbstractTNTStickBlockStateDataGenerator;
+import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -22,8 +24,20 @@ public class ShapedTNTStickBlockStateDataGenerator extends AbstractTNTStickBlock
     }
 
     @Override
+    protected Block getBlock()
+    {
+        return ModBlocks.SHAPED_TNT_STICK;
+    }
+
+    @Override
     protected String getModelPath()
     {
         return "block/tnt/shaped";
+    }
+
+    @Override
+    public String getName()
+    {
+        return "Shaped TNT Stick BlockState DataGenerator.";
     }
 }

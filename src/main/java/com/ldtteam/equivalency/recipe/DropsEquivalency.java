@@ -3,8 +3,7 @@ package com.ldtteam.equivalency.recipe;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
 import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
-import com.ldtteam.equivalency.api.gameobject.loottable.LootTableAnalyserRegistry;
-import net.minecraft.client.Minecraft;
+import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.Set;
@@ -49,8 +48,6 @@ public class DropsEquivalency
             outputs = LootTableAnalyserRegistry.getInstance().calculateOutputs(lootTableSource, world);
         }
         return outputs;
-
-        Minecraft.getInstance().getTextureMap()
     }
 
     @Override
