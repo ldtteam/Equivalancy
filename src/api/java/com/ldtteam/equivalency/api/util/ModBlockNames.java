@@ -11,18 +11,12 @@ public final class ModBlockNames
     }
 
     public static final class Path {
-        public static final class Block {
-            public static final String UNSHAPED_TNT_STICK = "tnt_stick_unshaped";
-            public static final String SHAPED_TNT_STICK = "tnt_stick_shaped";
-            public static final String TNT_STACK_STABLE = "tnt_stack_stable";
-        }
+        public static final String BEDROCK_SINGULARITY = "bedrock_singularity";
+        public static final String INGESTION_TABLE = "ingestion_table";
     }
 
     public static final class Name {
-        public static final class Block {
-            public static final ResourceLocation UNSHAPED_TNT_STICK = new ResourceLocation(Constants.MOD_ID, Path.Block.UNSHAPED_TNT_STICK);
-            public static final ResourceLocation SHAPED_TNT_STICK = new ResourceLocation(Constants.MOD_ID, Path.Block.SHAPED_TNT_STICK);
-            public static final ResourceLocation TNT_STACK_STABLE = new ResourceLocation(Constants.MOD_ID, Path.Block.TNT_STACK_STABLE);
-        }
+        public static final ResourceLocation BEDROCK_SINGULARITY = new ResourceLocation(Constants.MOD_ID, Path.BEDROCK_SINGULARITY);
+        public static final ResourceLocation INGESTION_TABLE = new ResourceLocation(Constants.MOD_ID, Path.INGESTION_TABLE);
     }
 }

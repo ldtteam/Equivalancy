@@ -1,0 +1,5 @@
+befdc75c73dba51c3e06d3c5bf8d924f0363f97d ../../main/resources/assets/equivalency/lang/en_us.json
+0e2faffae4891ab462252e9a81995a2a6abda9d1 assets/equivalency/blockstates/bedrock_singularity.json
+b24ff45504c7b4cdabc195ceb2faba2618937abc data/equivalency/loot_tables/blocks/ingestion_table.json
+8b2cf120c37043107f6b436ede6b2db271a26e13 data/equivalency/recipes/ingestion_table.json
+c89cde30319a167d9375f5c9a6bce48d73d2c6f7 data/equivalency/recipes/redstone_from_bedrock_singularity.json

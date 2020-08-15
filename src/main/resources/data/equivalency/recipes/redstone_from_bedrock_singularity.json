@@ -1,0 +1,16 @@
+{
+  "type": "equivalency:singularity_transmutation",
+  "ingredients": [
+    {
+      "item": "minecraft:coal"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "item": "minecraft:redstone"
+  },
+  "massIncrease": 40.0
+}

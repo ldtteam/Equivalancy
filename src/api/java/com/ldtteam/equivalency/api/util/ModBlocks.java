@@ -12,12 +12,9 @@ public final class ModBlocks
         throw new IllegalStateException("Tried to initialize: ModBlocks but this is a Utility class.");
     }
 
-    @ObjectHolder(ModBlockNames.Path.Block.UNSHAPED_TNT_STICK)
-    public static Block UNSHAPED_TNT_STICK;
+    @ObjectHolder(ModBlockNames.Path.BEDROCK_SINGULARITY)
+    public static Block BEDROCK_SINGULARITY;
 
-    @ObjectHolder(ModBlockNames.Path.Block.SHAPED_TNT_STICK)
-    public static Block SHAPED_TNT_STICK;
-
-    @ObjectHolder(ModBlockNames.Path.Block.TNT_STACK_STABLE)
-    public static Block TNT_STACK_STABLE;
+    @ObjectHolder(ModBlockNames.Path.INGESTION_TABLE)
+    public static Block INGESTION_TABLE;
 }

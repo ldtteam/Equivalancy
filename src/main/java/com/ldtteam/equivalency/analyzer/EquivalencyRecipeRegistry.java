@@ -2,10 +2,9 @@ package com.ldtteam.equivalency.analyzer;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
+import com.ldtteam.equivalency.api.recipe.equivalency.IEquivalencyRecipe;
+import com.ldtteam.equivalency.api.recipe.equivalency.IEquivalencyRecipeRegistry;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 

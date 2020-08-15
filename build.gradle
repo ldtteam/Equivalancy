@@ -140,6 +140,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${project.exactMinecraftVersion}:${project.jeiVersion}")
 
     // data generators.
+    apiImplementation "com.ldtteam:datagenerators:${project.dataGeneratorsVersion}"
     implementation "com.ldtteam:datagenerators:${project.dataGeneratorsVersion}"
 
     // unit testing

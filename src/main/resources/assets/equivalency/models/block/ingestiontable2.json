@@ -1,11 +1,10 @@
 {
-	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "BlockbenchSaves:jar",
-		"1": "blocks/planks_big_oak",
-		"2": "blocks/log_big_oak",
-		"3": "BlockbenchSaves:DarkerIron",
-		"particle": "BlockbenchSaves:jar"
+		"0": "jar",
+		"1": "minecraft:blocks/planks_big_oak",
+		"2": "minecraft:blocks/log_big_oak",
+		"3": "DarkerIron",
+		"particle": "blocks/log_big_oak"
 	},
 	"elements": [
 		{

@@ -1,8 +1,7 @@
 package com.ldtteam.equivalency.bootstrap;
 
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.api.util.BlockUtils;
-import com.ldtteam.equivalency.api.util.ItemStackUtils;
+import com.ldtteam.equivalency.api.util.*;
 import com.ldtteam.equivalency.compound.container.blockstate.BlockContainer;
 import com.ldtteam.equivalency.compound.container.heat.HeatContainer;
 import com.ldtteam.equivalency.compound.container.itemstack.ItemStackContainer;
@@ -12,16 +11,25 @@ import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandle
 import com.ldtteam.equivalency.gameobject.loottable.LootTableAnalyserRegistry;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.LootTable;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.GenerationStage;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.ReplaceBlockConfig;
+import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +48,8 @@ public class CommonBootstrapper
         doBootstrapEquivalencyHandler();
         doBootstrapTagNames();
         doBootstrapLootTableAnalyzers();
+        doBootstrapRecipeTypes();
+        doBootstrapOreGeneration();
     }
 
     private static void doBootstrapWrapperFactories()
@@ -269,5 +279,22 @@ public class CommonBootstrapper
                          Collectors.toSet());
           }
         );
+    }
+
+    private static void doBootstrapRecipeTypes() {
+        DeferredWorkQueue.runLater(() -> {
+            LOGGER.info("Registering recipe types");
+            ModRecipeTypes.SINGULARITY_TRANSMUTATION = IRecipeType.register(ModRecipeTypeNames.Name.SINGULARITY_TRANSMUTATION.toString());
+        });
+    }
+
+    private static void doBootstrapOreGeneration() {
+        DeferredWorkQueue.runLater(() -> {
+            LOGGER.info("Registering ore generation components");
+            ForgeRegistries.BIOMES.getValues().forEach(biome -> {
+                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, ModBiomeFeatures.BEDROCK_SINGULARITY.withConfiguration(new ReplaceBlockConfig(Blocks.BEDROCK.getDefaultState(), ModBlocks.BEDROCK_SINGULARITY.getDefaultState())).withPlacement(
+                  ModPlacements.BEDROCK_SINGULARITY.configure(IPlacementConfig.NO_PLACEMENT_CONFIG)));
+            });
+        });
     }
 }

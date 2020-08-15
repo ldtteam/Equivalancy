@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=south": {
+      "model": "equivalency:block/ingestion_table",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "equivalency:block/ingestion_table",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "equivalency:block/ingestion_table"
+    },
+    "facing=west": {
+      "model": "equivalency:block/ingestion_table",
+      "x": 270,
+      "y": 270
+    }
+  }
+}

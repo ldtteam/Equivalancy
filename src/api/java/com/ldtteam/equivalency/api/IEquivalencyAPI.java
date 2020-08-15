@@ -6,7 +6,7 @@ import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContaine
 import com.ldtteam.equivalency.api.compound.container.registry.ICompoundContainerSerializerRegistry;
 import com.ldtteam.equivalency.api.equivalency.IEquivalencyInformationCache;
 import com.ldtteam.equivalency.api.gameobject.equivalent.IGameObjectEquivalencyHandlerRegistry;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipeRegistry;
+import com.ldtteam.equivalency.api.recipe.equivalency.IEquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.tags.ITagEquivalencyRegistry;
 import com.ldtteam.equivalency.api.gameobject.loottable.ILootTableAnalyserRegistry;
 import net.minecraft.util.RegistryKey;

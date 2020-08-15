@@ -3,7 +3,7 @@ package com.ldtteam.equivalency.bootstrap;
 import com.google.common.collect.Sets;
 import com.ldtteam.equivalency.analyzer.EquivalencyRecipeRegistry;
 import com.ldtteam.equivalency.api.compound.container.ICompoundContainer;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
+import com.ldtteam.equivalency.api.recipe.equivalency.IEquivalencyRecipe;
 import com.ldtteam.equivalency.api.util.ItemStackUtils;
 import com.ldtteam.equivalency.api.util.ModCompoundTypes;
 import com.ldtteam.equivalency.compound.information.LockedCompoundInformationRegistry;
@@ -11,10 +11,10 @@ import com.ldtteam.equivalency.compound.simple.SimpleCompoundInstance;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
 import com.ldtteam.equivalency.gameobject.equivalent.GameObjectEquivalencyHandlerRegistry;
-import com.ldtteam.equivalency.recipe.DropsEquivalency;
-import com.ldtteam.equivalency.recipe.SimpleEquivalancyRecipe;
-import com.ldtteam.equivalency.recipe.SmeltingEquivalancyRecipe;
-import com.ldtteam.equivalency.recipe.TagEquivalencyRecipe;
+import com.ldtteam.equivalency.recipe.equivalency.DropsEquivalency;
+import com.ldtteam.equivalency.recipe.equivalency.SimpleEquivalancyRecipe;
+import com.ldtteam.equivalency.recipe.equivalency.SmeltingEquivalancyRecipe;
+import com.ldtteam.equivalency.recipe.equivalency.TagEquivalencyRecipe;
 import com.ldtteam.equivalency.tags.TagEquivalencyRegistry;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
@@ -151,17 +151,15 @@ public final class WorldBootstrapper
 
     private static void doBootstrapDefaultCraftingRecipes(@NotNull final World world)
     {
-        final Map<ResourceLocation, IRecipe<CraftingInventory>> craftingRecipes = world.getRecipeManager().getRecipes(IRecipeType.CRAFTING);
+        final List<ICraftingRecipe> craftingRecipes = world.getRecipeManager().func_241447_a_(IRecipeType.CRAFTING);
         craftingRecipes
-          .values()
           .parallelStream()
           .forEach(recipe -> {
               processCraftingRecipe(world, recipe);
           });
 
-        final Map<ResourceLocation, IRecipe<IInventory>> smeltingRecipe = world.getRecipeManager().getRecipes(IRecipeType.SMELTING);
+        final List<FurnaceRecipe> smeltingRecipe = world.getRecipeManager().func_241447_a_(IRecipeType.SMELTING);
         smeltingRecipe
-          .values()
           .parallelStream()
           .forEach(recipe -> {
               processSmeltingRecipe(world, recipe);

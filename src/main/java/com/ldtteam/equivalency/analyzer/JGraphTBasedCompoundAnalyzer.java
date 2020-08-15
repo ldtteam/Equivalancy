@@ -13,6 +13,7 @@ import com.ldtteam.equivalency.compound.information.LockedCompoundInformationReg
 import com.ldtteam.equivalency.compound.simple.SimpleCompoundInstance;
 import com.ldtteam.equivalency.compound.container.registry.CompoundContainerFactoryRegistry;
 import com.ldtteam.equivalency.compound.information.ValidCompoundTypeInformationProviderRegistry;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jgrapht.Graph;
@@ -20,6 +21,8 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 public class JGraphTBasedCompoundAnalyzer
@@ -33,7 +36,7 @@ public class JGraphTBasedCompoundAnalyzer
 
     public Map<ICompoundContainer<?>, Set<ICompoundInstance>> calculate()
     {
-        final Map<ICompoundContainer<?>, Set<ICompoundInstance>> resultingCompounds = new TreeMap<>();
+        final Map<ICompoundContainer<?>, Set<ICompoundInstance>> resultingCompounds = new ConcurrentSkipListMap<>();
 
         final Graph<IAnalysisGraphNode, DefaultWeightedEdge> recipeGraph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
@@ -53,7 +56,7 @@ public class JGraphTBasedCompoundAnalyzer
 
                   final IAnalysisGraphNode inputWrapperGraphNode = nodes.get(unitInputWrapper);
 
-                  resultingCompounds.putIfAbsent(unitInputWrapper, new TreeSet<>());
+                  resultingCompounds.putIfAbsent(unitInputWrapper, new ConcurrentSkipListSet<>());
                   recipeGraph.addVertex(inputWrapperGraphNode);
 
                   recipeGraph.addEdge(inputWrapperGraphNode, recipeGraphNode);
@@ -67,7 +70,7 @@ public class JGraphTBasedCompoundAnalyzer
 
                   final IAnalysisGraphNode outputWrapperGraphNode = nodes.get(unitOutputWrapper);
 
-                  resultingCompounds.putIfAbsent(unitOutputWrapper, new TreeSet<>());
+                  resultingCompounds.putIfAbsent(unitOutputWrapper, new ConcurrentSkipListSet<>());
                   recipeGraph.addVertex(outputWrapperGraphNode);
 
                   recipeGraph.addEdge(recipeGraphNode, outputWrapperGraphNode);
@@ -82,7 +85,7 @@ public class JGraphTBasedCompoundAnalyzer
 
                 final IAnalysisGraphNode inputWrapperGraphNode = nodes.get(lockedWrapper);
 
-                resultingCompounds.putIfAbsent(lockedWrapper, new TreeSet<>());
+                resultingCompounds.putIfAbsent(lockedWrapper, new ConcurrentSkipListSet<>());
                 recipeGraph.addVertex(inputWrapperGraphNode);
             }
             else
@@ -130,6 +133,9 @@ public class JGraphTBasedCompoundAnalyzer
                 }
                 else
                 {
+                    if (!resultingCompounds.containsKey(v.getWrapper()))
+                        resultingCompounds.putIfAbsent(v.getWrapper(), new ConcurrentSkipListSet<>());
+
                     resultingCompounds.get(v.getWrapper()).addAll(v.getCompoundInstances());
                 }
             }

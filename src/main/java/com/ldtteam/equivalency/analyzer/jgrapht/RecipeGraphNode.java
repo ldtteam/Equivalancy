@@ -1,7 +1,7 @@
 package com.ldtteam.equivalency.analyzer.jgrapht;
 
 import com.google.common.collect.Sets;
-import com.ldtteam.equivalency.api.recipe.IEquivalencyRecipe;
+import com.ldtteam.equivalency.api.recipe.equivalency.IEquivalencyRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;

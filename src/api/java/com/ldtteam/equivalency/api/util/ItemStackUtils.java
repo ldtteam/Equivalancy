@@ -92,7 +92,7 @@ public class ItemStackUtils
 
                     synchronized (toolTypeBestToolMap)
                     {
-                        if (toolTypeBestToolMap.containsKey(toolTypeOnItem) && toolTypeBestToolMap.get(toolType).getB() < toolLevel)
+                        if (toolTypeBestToolMap.containsKey(toolTypeOnItem) && toolTypeBestToolMap.get(toolTypeOnItem).getB() < toolLevel)
                         {
                             toolTypeBestToolMap.remove(toolTypeOnItem);
                         }
