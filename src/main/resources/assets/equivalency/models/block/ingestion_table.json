@@ -1,12 +1,13 @@
 {
 	"credit": "Made with Blockbench",
+	"texture_size": [48, 12],
 	"textures": {
 		"0": "equivalency:blocks/jar",
-		"1": "minecraft:block/dark_oak_planks",
-		"2": "minecraft:block/dark_oak_log",
+		"1": "block/dark_oak_planks",
+		"2": "block/dark_oak_log",
 		"3": "equivalency:blocks/darker_iron",
 		"4": "equivalency:blocks/carpet",
-		"particle": "minecraft:block/dark_oak_log"
+		"particle": "block/dark_oak_log"
 	},
 	"elements": [
 		{
@@ -1139,17 +1140,76 @@
 			}
 		},
 		{
-			"name": "Carpet",
-			"from": [2, 16, 4],
-			"to": [14, 16.25, 12],
-			"rotation": {"angle": 22.5, "axis": "y", "origin": [8, 16, 8]},
+			"name": "Base",
+			"from": [1, 19, -1],
+			"to": [15, 20, 13],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 24, 8]},
+			"color": 2,
 			"faces": {
-				"north": {"uv": [0, 0, 16, 1], "texture": "#4"},
-				"east": {"uv": [0, 0, 13, 1], "texture": "#4"},
-				"south": {"uv": [0, 15, 16, 16], "texture": "#4"},
-				"west": {"uv": [0, 0, 13, 1], "texture": "#4"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#4"},
-				"down": {"uv": [0, 0, 16, 16], "texture": "#4"}
+				"north": {"uv": [0, 0, 14, 1], "texture": "#missing"},
+				"east": {"uv": [0, 0, 14, 1], "texture": "#missing"},
+				"south": {"uv": [0, 0, 14, 1], "texture": "#missing"},
+				"west": {"uv": [0, 0, 14, 1], "texture": "#missing"},
+				"up": {"uv": [0, 0, 14, 14], "texture": "#missing"},
+				"down": {"uv": [0, 0, 14, 14], "texture": "#missing"}
+			}
+		},
+		{
+			"name": "Back",
+			"from": [1, 16, 14.15],
+			"to": [15, 22.2, 15.15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 24, 8]},
+			"color": 5,
+			"faces": {
+				"north": {"uv": [0, 0, 14, 6.2], "texture": "#missing"},
+				"east": {"uv": [0, 0, 1, 6.2], "texture": "#missing"},
+				"south": {"uv": [0, 0, 14, 6.2], "texture": "#missing"},
+				"west": {"uv": [0, 0, 1, 6.2], "texture": "#missing"},
+				"up": {"uv": [0, 0, 14, 1], "texture": "#missing"},
+				"down": {"uv": [0, 0, 14, 1], "texture": "#missing"}
+			}
+		},
+		{
+			"name": "Rim",
+			"from": [1.5, 20, -0.5],
+			"to": [14.5, 21, 0.5],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [8, 24, 8]},
+			"color": 6,
+			"faces": {
+				"north": {"uv": [0, 0, 13, 1], "texture": "#missing"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"south": {"uv": [0, 0, 13, 1], "texture": "#missing"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"up": {"uv": [0, 0, 13, 1], "texture": "#missing"},
+				"down": {"uv": [0, 0, 13, 1], "texture": "#missing"}
+			}
+		},
+		{
+			"name": "Top",
+			"from": [-14, 16, -16],
+			"to": [-2, 16.25, 16],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 16.125, 0]},
+			"faces": {
+				"north": {"uv": [0, 0, 13, 1], "texture": "#4"},
+				"east": {"uv": [0, 15, 16, 16], "texture": "#4"},
+				"south": {"uv": [0, 0, 13, 1], "texture": "#4"},
+				"west": {"uv": [0, 0, 16, 1], "texture": "#4"},
+				"up": {"uv": [2.66667, 0, 13.33333, 16], "rotation": 270, "texture": "#4"},
+				"down": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#4"}
+			}
+		},
+		{
+			"name": "Front",
+			"from": [-14, 8.125, -16],
+			"to": [-2, 16.125, -15.75],
+			"rotation": {"angle": 0, "axis": "x", "origin": [-8, 12.125, -15]},
+			"faces": {
+				"north": {"uv": [0, 0, 2.66667, 16], "rotation": 270, "texture": "#4"},
+				"east": {"uv": [0, 15, 16, 16], "rotation": 270, "texture": "#4"},
+				"south": {"uv": [0, 0, 2.66667, 16], "rotation": 270, "texture": "#4"},
+				"west": {"uv": [0, 0, 16, 1], "rotation": 90, "texture": "#4"},
+				"up": {"uv": [0, 0, 13, 1], "rotation": 180, "texture": "#4"},
+				"down": {"uv": [0, 0, 13, 1], "texture": "#4"}
 			}
 		}
 	],
@@ -1293,7 +1353,28 @@
 				{
 					"name": "Top",
 					"origin": [8, 8, 8],
-					"children": [77, 78, 79, 80, 81, 82]
+					"children": [77, 78, 79, 80, 81]
+				}
+			]
+		},
+		{
+			"name": "Lectern",
+			"origin": [8, 8, 8],
+			"children": [82, 83, 84]
+		},
+		{
+			"name": "Carpets",
+			"origin": [8, 8, 8],
+			"children": [
+				{
+					"name": "Left",
+					"origin": [8, 8, 8],
+					"children": []
+				},
+				{
+					"name": "Right",
+					"origin": [8, 8, 8],
+					"children": [85, 86]
 				}
 			]
 		}
